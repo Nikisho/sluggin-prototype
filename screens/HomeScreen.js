@@ -7,7 +7,7 @@ import { Button, Icon } from 'react-native-elements';
 
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={tw`justify-center bg-green-300 h-full`}>
+    <SafeAreaView style={tw`justify-center bg-gray-300 h-full`}>
       <View style={tw`mx-7 bg-white rounded-2xl`}>
 
         {/* textInputFrom */}
@@ -57,6 +57,13 @@ const HomeScreen = () => {
             debounce={400}
 
         />
+        <View style={tw`flex flex-row p-2 border-t`}>
+            <Icon
+                name='calendar-outline'
+                type='ionicon'
+                size={30}
+            />
+        </View>
         <Button
             title="Search"
             titleStyle={{
