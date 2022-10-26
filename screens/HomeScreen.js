@@ -3,9 +3,14 @@ import React from 'react'
 import tw from 'tailwind-react-native-classnames'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { GOOGLE_MAPS_APIKEY } from "@env";
-import { Button, Icon } from 'react-native-elements';
-
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { Button } from '@rneui/base';
+import { Icon } from "@rneui/themed";
+import { setOrigin } from '../slices/navSlice';
 const HomeScreen = () => {
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
   return (
     <SafeAreaView style={tw`justify-center bg-gray-300 h-full`}>
       <View style={tw`mx-7 bg-white rounded-2xl`}>
@@ -44,6 +49,13 @@ const HomeScreen = () => {
                     fontSize: 18,
                 },
             }}
+            onPress={(data, details = null) => {
+                dispatch(setOrigin({
+                    location: details.geometry.location,
+                    description: data.description
+                }))
+                dispatch(setDestination(null))
+            }}
             fetchDetails={true}
             returnKeyType={"search"}
             minLength={2}
@@ -65,6 +77,7 @@ const HomeScreen = () => {
             />
         </View>
         <Button
+            onPress={() => navigation.navigate('RideOptionsCard')}
             title="Search"
             titleStyle={{
                 fontWeight: 'semibold',

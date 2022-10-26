@@ -6,6 +6,7 @@ import { store } from './store';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native'
+import RideOptionsCard from './components/RideOptionsCard';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -20,10 +21,16 @@ export default function App() {
               options={{
                 headerShown: false,
               }}
+            />
+            <Stack.Screen
+              name='RideOptionsCard' 
+              component={RideOptionsCard}
+              options={{
+                headerShown: false,
+              }}
             />          
-          </Stack.Navigator>
-        </NavigationContainer>
-        
+            </Stack.Navigator>
+        </NavigationContainer>        
       </SafeAreaProvider>
     </Provider>
   );
@@ -37,29 +44,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-// import { NavigationContainer } from '@react-navigation/native';
-// import { SafeAreaProvider } from 'react-native-safe-area-context';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-// export default function App() {
-//     const Stack = createNativeStackNavigator();
-//   return (
-//     <Provider store={store}>
-//       <SafeAreaProvider>
-        // <NavigationContainer>
-        //   <Stack.Navigator>
-        //     <Stack.Screen
-        //       name='HomeScreen' 
-        //       component={HomeScreen}
-        //       options={{
-        //         headerShown: false,
-        //       }}
-        //     />          
-        //   </Stack.Navigator>
-        // </NavigationContainer>
-//       </SafeAreaProvider>
-//     </Provider>
-//   );
-// }
