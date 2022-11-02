@@ -11,14 +11,16 @@ import { setOrigin } from '../slices/navSlice';
 import { useState } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-const HomeScreen = () => {
+import moment from 'moment';
+
+const HomeScreen = (currentDate) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();    
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-  
     const onChange = (event, selectedDate) => {
       const currentDate = selectedDate;
+      console.log(currentDate)
       setShow(false);
       setDate(currentDate);
     };
@@ -81,14 +83,16 @@ const HomeScreen = () => {
                 debounce={400}
 
             />
-            <View style={tw`flex flex-row p-2 border-t`}>
+            <View style={tw`flex flex-row p-2 border-t items-center`}>
                 <Icon
                     name='calendar-outline'
                     type='ionicon'
                     size={30}
-                    // onPress={() => {setOpen(true); console.log(open)}}
                     onPress={() => setShow(true)}
                 />
+                <Text style={tw`px-3 font-semibold`}>
+                    {moment(date).format('ddd, DD MMM')}
+                </Text>
             </View>
             <Button
                 onPress={() => navigation.navigate('RideOptionsCard')}
@@ -111,6 +115,7 @@ const HomeScreen = () => {
             {show && (
                 <DateTimePicker
                     testID="dateTimePicker"
+                    placeholder="select date"
                     value={date}
                     mode='date'
                     is24Hour={true}
