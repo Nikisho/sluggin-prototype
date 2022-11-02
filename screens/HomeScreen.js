@@ -36,7 +36,7 @@ const HomeScreen = (currentDate) => {
                         flex: 0,
                     },
                     textInput: {
-                        fontSize: 19,
+                        fontSize: 15,
                     },
                 }}
                 fetchDetails={true}
@@ -58,9 +58,12 @@ const HomeScreen = (currentDate) => {
                         flex: 0,
                         borderTopWidth: 0.3,
                         borderTopColor: "gray",
+                        borderBottomWidth: 0.3,
+                        borderBottomColor: "gray",
+
                     },
                     textInput: {
-                        fontSize: 18,
+                        fontSize: 15,
                     },
                 }}
                 onPress={(data, details = null) => {
@@ -83,7 +86,7 @@ const HomeScreen = (currentDate) => {
                 debounce={400}
 
             />
-            <View style={tw`flex flex-row p-2 border-t items-center`}>
+            <View style={tw`flex flex-row p-2 items-center`}>
                 <Icon
                     name='calendar-outline'
                     type='ionicon'
