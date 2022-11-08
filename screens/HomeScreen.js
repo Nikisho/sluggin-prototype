@@ -7,26 +7,28 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { Button } from '@rneui/base';
 import { Icon } from "@rneui/themed";
-import { setOrigin } from '../slices/navSlice';
+import { setOrigin, setTravelDate } from '../slices/navSlice';
 import { useState } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
-const HomeScreen = (currentDate) => {
+const HomeScreen = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();    
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate;
-      console.log(currentDate)
-      setShow(false);
-      setDate(currentDate);
+
+    const onChange = (event, selectedDate ) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setDate(currentDate);
+        dispatch(setTravelDate(currentDate.toDateString()))
+        console.log(date.toDateString()+' LOOKHERE')
     };
   
   return (
-    <SafeAreaView style={tw`justify-center bg-gray-300 h-full`}>
+    <SafeAreaView style={tw`justify-center bg-green-200 h-full`}>
         <View style={tw`mx-7 bg-white rounded-2xl`}>
 
             {/* textInputFrom */}
@@ -38,6 +40,13 @@ const HomeScreen = (currentDate) => {
                     textInput: {
                         fontSize: 15,
                     },
+                }}
+                onPress={(data, details = null) => {
+                    dispatch(setOrigin({
+                        location: details.geometry.location,
+                        description: data.description
+                    }))
+                    dispatch(setDestination(null))
                 }}
                 fetchDetails={true}
                 returnKeyType={"search"}
@@ -66,12 +75,14 @@ const HomeScreen = (currentDate) => {
                         fontSize: 15,
                     },
                 }}
-                onPress={(data, details = null) => {
-                    dispatch(setOrigin({
+                onPress={(data, details=null)=> {
+                    dispatch(
+                      setDestination({
                         location: details.geometry.location,
-                        description: data.description
-                    }))
-                    dispatch(setDestination(null))
+                        description: data.description,
+                      })
+                    );
+                    // navigation.navigate('RideOptionsCard');
                 }}
                 fetchDetails={true}
                 returnKeyType={"search"}
@@ -86,17 +97,19 @@ const HomeScreen = (currentDate) => {
                 debounce={400}
 
             />
-            <View style={tw`flex flex-row p-2 items-center`}>
-                <Icon
-                    name='calendar-outline'
-                    type='ionicon'
-                    size={30}
-                    onPress={() => setShow(true)}
-                />
-                <Text style={tw`px-3 font-semibold`}>
-                    {moment(date).format('ddd, DD MMM')}
-                </Text>
-            </View>
+            <TouchableOpacity 
+                onPress={() => setShow(true)}
+                style={tw`flex flex-row p-2 items-center`}>
+                    <Icon
+                        name='calendar-outline'
+                        type='ionicon'
+                        size={30}
+                        
+                    />
+                    <Text style={tw`px-3 font-semibold`}>
+                        {moment(date).format('ddd, DD MMM')}
+                    </Text>
+            </TouchableOpacity>
             <Button
                 onPress={() => navigation.navigate('RideOptionsCard')}
                 title="Search"
