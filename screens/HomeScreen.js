@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { Button } from '@rneui/base';
 import { Icon } from "@rneui/themed";
-import { setOrigin, setTravelDate } from '../slices/navSlice';
+import { setDestination, setOrigin, setTravelDate } from '../slices/navSlice';
 import { useState } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -28,8 +28,8 @@ const HomeScreen = () => {
     };
   
   return (
-    <SafeAreaView style={tw`justify-center bg-green-200 h-full`}>
-        <View style={tw`mx-7 bg-white rounded-2xl`}>
+    <SafeAreaView style={tw`justify-center h-full`}>
+        <View style={tw`mx-7 bg-white shadow-lg rounded-xl p-3`}>
 
             {/* textInputFrom */}
             <GooglePlacesAutocomplete 
@@ -145,4 +145,20 @@ const HomeScreen = () => {
 
 export default HomeScreen
 
-const styles = StyleSheet.create({})
+const toInputBoxStyles = StyleSheet.create({
+    container: {
+      backgroundColor: 'white',
+      paddingTop: 20,
+      flex: 0,
+    },
+  
+    textInput : {
+      backgroundColor: '#DDDDDF',
+      borderRadius: 50,
+      fontSize: 18,
+    },
+    textInputContainer: {
+      paddingHorizontal: 20,
+      paddingBottom: 0
+    },
+  });
