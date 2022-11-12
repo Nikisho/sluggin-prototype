@@ -2,8 +2,8 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import React from 'react'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
-import { useSelector } from 'react-redux'
-import { selectTravelDate } from '../slices/navSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectTravelDate, setRideScreen } from '../slices/navSlice'
 import moment from 'moment'
 import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
@@ -11,6 +11,8 @@ import { useNavigation } from '@react-navigation/native'
 const RideOptionsCard = () => {
   const date = useSelector(selectTravelDate);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const data = [
     {
       id: 1,
@@ -47,9 +49,15 @@ const RideOptionsCard = () => {
       price: '14'
 
     },
-  ]
+  ];
 
-  console.log(date + ' check');
+  const selectRide = async (id) => {
+
+    dispatch(setRideScreen(id));
+    navigation.navigate('RideScreen');
+
+  };
+
   return (
     <SafeAreaView style={tw``}>
       {/* Header */}
@@ -71,7 +79,9 @@ const RideOptionsCard = () => {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({item:{id, name, origin, destination, image, departureTime, arrivalTime, reviews, price}}) => (
-          <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}>
+          <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}
+                            onPress={() => selectRide(id)}
+          >
             <View style={tw`flex-row justify-between `}>
               <Text style={tw`font-bold`}>{origin}</Text>
               <Icon

@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native'
 import RideOptionsCard from './components/RideOptionsCard';
+import RideScreen from './screens/RideScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -28,7 +29,14 @@ export default function App() {
               options={{
                 headerShown: false,
               }}
-            />          
+            />
+            <Stack.Screen
+              name='RideScreen' 
+              component={RideScreen}
+              options={{
+                headerShown: false,
+              }}
+            />                         
             </Stack.Navigator>
         </NavigationContainer>        
       </SafeAreaProvider>
