@@ -131,7 +131,6 @@ const HomeScreen = () => {
             {show && (
                 <DateTimePicker
                     testID="dateTimePicker"
-                    placeholder="select date"
                     value={date}
                     mode='date'
                     is24Hour={true}
@@ -139,26 +138,43 @@ const HomeScreen = () => {
                 />
             )}           
         </View>
+        {/* <TouchableOpacity 
+          onPress={() => navigation.navigate('HomeScreen')}
+          style={tw`absolute bottom-16 left-8 bg-gray-100 z-50 p-3 rounded-full
+          shadow-lg`}>
+          <Icon name='menu' />
+      </TouchableOpacity> */}
+      <View style={[tw`flex-row justify-between absolute bottom-0 bg-white w-full h-20 p-3 px-10`, {borderTopWidth: 0.5}]}>
+        <TouchableOpacity>
+            <Icon
+                name='home'
+                size={40}
+            />
+            <Text>
+                Home
+            </Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+            <Icon
+                name='add-circle'
+                size={40}
+            />
+            <Text>
+                Submit
+            </Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+            <Icon
+                name='person'
+                size={40}
+            />
+            <Text>
+                Account
+            </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
 
 export default HomeScreen
-
-const toInputBoxStyles = StyleSheet.create({
-    container: {
-      backgroundColor: 'white',
-      paddingTop: 20,
-      flex: 0,
-    },
-  
-    textInput : {
-      backgroundColor: '#DDDDDF',
-      borderRadius: 50,
-      fontSize: 18,
-    },
-    textInputContainer: {
-      paddingHorizontal: 20,
-      paddingBottom: 0
-    },
-  });

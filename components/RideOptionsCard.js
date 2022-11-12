@@ -20,7 +20,8 @@ const RideOptionsCard = () => {
       destination: 'New York City, NY',
       departureTime: '9:00',
       arrivalTime: '13:00',
-      reviews: '4.9'
+      reviews: '4.9',
+      price: '11'
     },
     {
       id: 2,
@@ -30,7 +31,8 @@ const RideOptionsCard = () => {
       destination: 'New York City, NY',
       departureTime: '10:00',
       arrivalTime: '14:00',
-      reviews: '4.6'
+      reviews: '4.6',
+      price: '12'
 
     },
     {
@@ -41,7 +43,8 @@ const RideOptionsCard = () => {
       destination: 'Brooklyn, NY',
       departureTime: '10:10',
       arrivalTime: '13:40',
-      reviews: '4.8'
+      reviews: '4.8',
+      price: '14'
 
     },
   ]
@@ -49,6 +52,7 @@ const RideOptionsCard = () => {
   console.log(date + ' check');
   return (
     <SafeAreaView style={tw``}>
+      {/* Header */}
       <View style={tw`mx-2 rounded-xl justify-center items-center h-14 bg-black`}>
       <TouchableOpacity 
           onPress={() => navigation.navigate('HomeScreen')}
@@ -66,7 +70,7 @@ const RideOptionsCard = () => {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={({item:{id, name, origin, destination, image, departureTime, arrivalTime, reviews}}) => (
+        renderItem={({item:{id, name, origin, destination, image, departureTime, arrivalTime, reviews, price}}) => (
           <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}>
             <View style={tw`flex-row justify-between `}>
               <Text style={tw`font-bold`}>{origin}</Text>
@@ -86,33 +90,43 @@ const RideOptionsCard = () => {
             </View>
             <View style={tw`flex-row justify-between py-3`}>
 
-              <View style={tw` flex-row`}>
+                <View style={tw` items-center flex-row`}>
 
-                <Image
-                    style={{
-                      width: 40,
-                      height: 40,
-                      resizeMode: 'contain',
-                      borderRadius: 100
-                    }}
-                  source={{ uri: image}}
-                /> 
-                <View style={tw`px-4`}>
-                  <Text style={tw`text-lg font-semibold`}>{name}</Text>
-                  {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
+                  <Image
+                      style={{
+                        width: 40,
+                        height: 40,
+                        resizeMode: 'contain',
+                        borderRadius: 100
+                      }}
+                    source={{ uri: image}}
+                  /> 
+                  <View style={tw`px-4`}>
+                    <Text style={tw`text-lg font-semibold`}>{name}</Text>
+                    {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
+
+                    <View style={tw`items-center flex-row`}>
+                      <Text style={tw`text-lg px-2`}>
+                        {reviews}
+                      </Text>
+                      <Icon
+                        name='star'
+                        type='ionicon'
+                        color='yellow'
+                        size={20}
+                      />
+                    </View>
+                    
+                  </View>
+                  
                 </View>
-              </View>
-              <View style={tw`items-center flex-row`}>
-                <Text style={tw`text-lg px-2`}>
-                  {reviews}
-                </Text>
-                <Icon
-                  name='star'
-                  type='ionicon'
-                  color='yellow'
-                  size={20}
-                />
-              </View>
+
+                <View style={tw`justify-center h-10 bg-green-300 px-3 rounded-2xl`}>
+                  <Text style={tw`text-lg font-bold text-white`}>
+                    ${price}
+                  </Text>
+                </View>
+
             </View>
           </TouchableOpacity>
         )}
