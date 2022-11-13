@@ -62,15 +62,15 @@ const RideOptionsCard = () => {
     <SafeAreaView style={tw``}>
       {/* Header */}
       <View style={tw`mx-2 rounded-xl justify-center items-center h-14 bg-black`}>
-      <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.navigate('HomeScreen')}
           style={tw`absolute left-4 z-50 rounded-full
           shadow-lg`}>
-          <Icon name='chevron-back-outline' 
-              type='ionicon'
-              color='white'
+          <Icon name='chevron-back-outline'
+            type='ionicon'
+            color='white'
           />
-      </TouchableOpacity>
+        </TouchableOpacity>
         <Text style={tw`text-xl text-white`}>
           {moment(date).format('ddd, DD MMM')}
         </Text>
@@ -78,16 +78,16 @@ const RideOptionsCard = () => {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={({item:{id, name, origin, destination, image, departureTime, arrivalTime, reviews, price}}) => (
+        renderItem={({ item: { id, name, origin, destination, image, departureTime, arrivalTime, reviews, price } }) => (
           <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}
-                            onPress={() => selectRide(id)}
+            onPress={() => selectRide(id)}
           >
             <View style={tw`flex-row justify-between `}>
               <Text style={tw`font-bold`}>{origin}</Text>
               <Icon
                 name='arrow-forward-circle-outline'
                 style={tw` rounded-full`}
-                type='ionicon' 
+                type='ionicon'
                 color='black'
               />
               <Text style={tw`font-bold`}>
@@ -100,42 +100,42 @@ const RideOptionsCard = () => {
             </View>
             <View style={tw`flex-row justify-between py-3`}>
 
-                <View style={tw` items-center flex-row`}>
+              <View style={tw` items-center flex-row`}>
 
-                  <Image
-                      style={{
-                        width: 40,
-                        height: 40,
-                        resizeMode: 'contain',
-                        borderRadius: 100
-                      }}
-                    source={{ uri: image}}
-                  /> 
-                  <View style={tw`px-4`}>
-                    <Text style={tw`text-lg font-semibold`}>{name}</Text>
-                    {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
+                <Image
+                  style={{
+                    width: 40,
+                    height: 40,
+                    resizeMode: 'contain',
+                    borderRadius: 100
+                  }}
+                  source={{ uri: image }}
+                />
+                <View style={tw`px-4`}>
+                  <Text style={tw`text-lg font-semibold`}>{name}</Text>
+                  {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
 
-                    <View style={tw`items-center flex-row`}>
-                      <Text style={tw`text-lg px-2`}>
-                        {reviews}
-                      </Text>
-                      <Icon
-                        name='star'
-                        type='ionicon'
-                        color='yellow'
-                        size={20}
-                      />
-                    </View>
-                    
+                  <View style={tw`items-center flex-row`}>
+                    <Text style={tw`text-lg px-2`}>
+                      {reviews}
+                    </Text>
+                    <Icon
+                      name='star'
+                      type='ionicon'
+                      color='green'
+                      size={20}
+                    />
                   </View>
-                  
+
                 </View>
 
-                <View style={tw`justify-center h-10 bg-green-300 px-3 rounded-2xl`}>
-                  <Text style={tw`text-lg font-bold text-white`}>
-                    ${price}
-                  </Text>
-                </View>
+              </View>
+
+              <View style={tw`justify-center h-10 bg-green-300 px-3 rounded-2xl`}>
+                <Text style={tw`text-lg font-bold text-white`}>
+                  ${price}
+                </Text>
+              </View>
 
             </View>
           </TouchableOpacity>
