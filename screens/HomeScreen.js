@@ -69,7 +69,6 @@ const HomeScreen = () => {
                         borderTopColor: "gray",
                         borderBottomWidth: 0.3,
                         borderBottomColor: "gray",
-
                     },
                     textInput: {
                         fontSize: 15,
@@ -138,12 +137,6 @@ const HomeScreen = () => {
                 />
             )}           
         </View>
-        {/* <TouchableOpacity 
-          onPress={() => navigation.navigate('HomeScreen')}
-          style={tw`absolute bottom-16 left-8 bg-gray-100 z-50 p-3 rounded-full
-          shadow-lg`}>
-          <Icon name='menu' />
-      </TouchableOpacity> */}
       <View style={[tw`flex-row justify-between absolute bottom-0 bg-white w-full h-20 p-3 px-10`, {borderTopWidth: 0.5}]}>
         <TouchableOpacity>
             <Icon
@@ -154,7 +147,9 @@ const HomeScreen = () => {
                 Home
             </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PublishScreen')}
+        >
             <Icon
                 name='add-circle'
                 size={40}

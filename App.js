@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native'
 import RideOptionsCard from './components/RideOptionsCard';
 import RideScreen from './screens/RideScreen';
+import PublishScreen from './screens/PublishScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -36,7 +37,14 @@ export default function App() {
               options={{
                 headerShown: false,
               }}
-            />                         
+            />       
+            <Stack.Screen
+              name='PublishScreen' 
+              component={PublishScreen}
+              options={{
+                headerShown: false,
+              }}
+            />                                  
             </Stack.Navigator>
         </NavigationContainer>        
       </SafeAreaProvider>

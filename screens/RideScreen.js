@@ -74,6 +74,52 @@ const RideScreen = () => {
                 </View>
 
             </View>
+            <View style={tw`py-3`}>
+                <Text style={tw`text-xl font-bold`}>
+                    Thu, 17 2022
+                </Text>
+
+                {/* Journey Info */}
+                <View style={tw`flex-row py-8`}>
+
+                    {/* line icon and dots */}
+                    <View style={tw`items-center pr-3`}>
+                        <Icon style={tw`-mb-1`}
+                            name='ellipse-outline'
+                            color='black'
+                            type='ionicon'
+                            size={20}
+                        />
+                        <View style={{
+                            backgroundColor:'black',
+                            width: 3,
+                            height: 100,
+                        }}>
+
+                        </View>
+                        
+                        <Icon style={tw`-mt-1`}
+                            name='ellipse-outline'
+                            color='black'
+                            type='ionicon'
+                            size={20}
+                        />
+                    </View>
+
+                    {/* Origin and departure time */}
+                    <View style={tw`justify-between`}>
+                        <Text style={tw`text-lg font-semibold`}>
+                            9:30 - London
+                        </Text>
+                        <Text style={tw`text-lg font-semibold`}>
+                            11:40 - Birmingham 
+                        </Text>
+
+                    </View>
+                </View>
+
+
+            </View>
 
         </View>
 
