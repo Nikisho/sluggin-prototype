@@ -28,8 +28,8 @@ const HomeScreen = () => {
     };
   
   return (
-    <SafeAreaView style={tw`justify-center h-full`}>
-        <View style={tw`mx-7 bg-white shadow-lg rounded-xl p-3`}>
+    <SafeAreaView style={tw`h-full`}>
+        <View style={tw`top-1/3 mx-7 bg-white shadow-lg rounded-xl p-3`}>
 
             {/* textInputFrom */}
             <GooglePlacesAutocomplete 
