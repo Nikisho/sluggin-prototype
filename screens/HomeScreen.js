@@ -23,8 +23,8 @@ const HomeScreen = () => {
         const currentDate = selectedDate;
         setShow(false);
         setDate(currentDate);
-        dispatch(setTravelDate(currentDate.toDateString()))
-        console.log(date.toDateString()+' LOOKHERE')
+        dispatch(setTravelDate(currentDate.getTime()))
+        console.log(currentDate.getTime()+' LOOKHERE')
     };
   
   return (

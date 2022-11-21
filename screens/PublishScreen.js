@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import tw from 'tailwind-react-native-classnames'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from '@rneui/base'
@@ -8,10 +8,29 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { GOOGLE_MAPS_APIKEY } from '@env'
 import db from '../firebase'
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment'
 
 const PublishScreen = () => {
     const navigation = useNavigation();
-    
+    const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
+
+    const onChange = ( event, selectedDate ) => {
+        const currentDate = selectedDate;
+        setShowDatePicker(false);
+        setDate(currentDate);
+    };
+
+    const onChangeTimePicker = ( event, selectedTime ) => {
+        const currentTime = selectedTime;
+        setShowTimePicker(false);
+        setTime(currentTime);
+        console.log(currentTime.getTime())
+    };
+
     //generates a random ID to be reused to update the doc as ride info is added
     const makeid = function(length) {
         let result           = '';
@@ -27,7 +46,6 @@ const PublishScreen = () => {
     const addDeparture = async (data, detail) => {
         try {
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
-                // id: generateID,
                 origin: detail,
                 originCoordinates: data,
             },  { merge: true })
@@ -39,7 +57,6 @@ const PublishScreen = () => {
     const addDestination = async (data, detail) => {
         try {
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
-                // id: generateID,
                 destination: detail,
                 desinationCoordinates: data,
             },  { merge: true })
@@ -66,7 +83,7 @@ const PublishScreen = () => {
             </TouchableOpacity>
         </View>
         {/* Trip info */}
-        <View style={tw`m-3`}>
+        <View style={tw`mt-3 mx-3`}>
             <GooglePlacesAutocomplete 
                     styles={{
                         container: {
@@ -124,7 +141,53 @@ const PublishScreen = () => {
                     debounce={400}
                 />
             </View>
-            
+            <View style={tw`flex-row mx-3 rounded-lg border p-2 bg-black items-center`}>
+                <TouchableOpacity style={tw`flex-row items-center border-r border-white mr-2 w-1/2`}
+                onPress={() => setShowDatePicker(true)}
+                >
+                    <Icon
+                        name='calendar-outline'
+                        type='ionicon'
+                        color='white'
+                        size={30}
+                        
+                    />   
+                    <Text style={tw`px-3 font-semibold text-white`}>
+                        {/* {moment(date).format('ddd, DD MMM')} */}
+                        {moment(date).format('ddd, DD MMM')}
+                    </Text>
+                    {showDatePicker && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode='date'
+                            is24Hour={true}
+                            onChange={onChange}
+                        />
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity style={tw`flex-row items-center`}
+                onPress={() => { setShowTimePicker(true)}}>
+                        <Icon
+                            name='time-outline'
+                            color='white'
+                            type='ionicon'
+                            size={30}
+                        />
+                        <Text style={tw`px-3 text-white font-semibold`}>
+                            {moment(time).format('HH:mm')}
+                        </Text>
+                        {showTimePicker && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode='time'
+                            is24Hour={true}
+                            onChange={onChangeTimePicker}
+                        />
+                    )}
+                </TouchableOpacity>             
+            </View>            
     </SafeAreaView>
   )
 }
