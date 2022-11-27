@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'react-redux';
 import HomeScreen from './screens/HomeScreen';
 import { store } from './store';
@@ -15,38 +15,43 @@ export default function App() {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-      <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name='HomeScreen' 
-              component={HomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name='RideOptionsCard' 
-              component={RideOptionsCard}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name='RideScreen' 
-              component={RideScreen}
-              options={{
-                headerShown: false,
-              }}
-            />       
-            <Stack.Screen
-              name='PublishScreen' 
-              component={PublishScreen}
-              options={{
-                headerShown: false,
-              }}
-            />                                  
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height "}
+          style={{ flex: 2 }}
+        >
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name='HomeScreen'
+                component={HomeScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name='RideOptionsCard'
+                component={RideOptionsCard}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name='RideScreen'
+                component={RideScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name='PublishScreen'
+                component={PublishScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
             </Stack.Navigator>
-        </NavigationContainer>        
+          </NavigationContainer>
+        </KeyboardAvoidingView>
       </SafeAreaProvider>
     </Provider>
   );

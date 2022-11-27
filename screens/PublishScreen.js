@@ -34,23 +34,33 @@ const PublishScreen = () => {
     const [pricePerSeat, setPricePerSeat] = useState(5.00);
     const [originPicked, setOriginPicked] = useState(false);
     const [destinationPicked, setDestinationPicked] = useState(false);
+    
+    //CREATE MUTABLE VARIABLES FOR THE ORIGIN AND DESTTINATION
+    const [originDescription, setOriginDescription] = useState(null);
+    const [originCoordinates, setOriginCoordinates] = useState(null);
+    const [destinationDescription, setDestinationDescription] = useState(null);
+    const [destinationCoordinates, setDestinationCoordinates] = useState(null);
 
-    const handleIncrement = () => {
+    const addPassenger = () => {
         if (numberOfPassengers >= 3) return;
         setNumberOfPassengers(numberOfPassengers + 1);
-        
-        // console.log(count);
     };
 
-    const handleDecrement = () => {
+    const removePassenger = () => {
         if (numberOfPassengers <= 1) return;
-        
         setNumberOfPassengers(numberOfPassengers - 1);
     };
 
-    const onChangeText = (text) => {
-        setPricePerSeat(text.replace(/[^0-9]/g, ''))
-    }
+    const incrementPrice = () => {
+        if (pricePerSeat >= 99) return;
+        setPricePerSeat(pricePerSeat+1);
+    };
+
+    const decrementPrice = () => {
+        if (pricePerSeat <= 5) return;
+
+        setPricePerSeat(pricePerSeat - 1)
+    };
 
     const onChange = ( event, selectedDate ) => {
         const currentDate = selectedDate;
@@ -65,43 +75,88 @@ const PublishScreen = () => {
         console.log(currentTime.getTime())
     };
 
-    const addDeparture = async (data, detail) => {
+    const addDeparture = (data, detail) => {
         try {
-            const docRef = await setDoc(doc(db, "TRIPS", generateID), {
-                origin: detail,
-                originCoordinates: data,
-            },  { merge: true });
+            setOriginDescription(detail);
+            setOriginCoordinates(data);
             setOriginPicked(true);
+
         } catch (e) {
-            console.error('Error adding doc: ', e);
+
+            console.error('Error setting origin: ', e);
         }
     };
-    
-    const addDestination = async (data, detail) => {
+
+    const addDestination = (data, detail) => {
         try {
-            const docRef = await setDoc(doc(db, "TRIPS", generateID), {
-                destination: detail,
-                desinationCoordinates: data,
-            },  { merge: true });
+            setDestinationDescription(detail);
+            setDestinationCoordinates(data);
             setDestinationPicked(true);
         } catch (e) {
-            console.error('Error adding doc: ', e);
+            console.error('Error setting destination: ', e);
         }
     };
 
+    // console.log(destinationDescription);
+
+    //HERE WE GET THE CITY NAME OF THE DEPARTURE POINT AND
+    //DESTINATION TO ADD TO FIRESTORE AND MATCH THEM WITH
+    //THE RIGHT QUERIES.
+    //HOWEVER THE IDEAL SCENARIO WOULD BE TO CALCULATE THE DISTANCE BETWEEN THE PICK UP POINT
+    //AND THE ORIGIN QUIERIED BY THE USER AND SIMILARLY FOR THE EDROP OFF POINT.
+    //I.E A USER MAY BE ABLE TO TRAVEL A FEW MILES FROM THE ORIGIN/DESTINATION 
+    // REGARDLESS OF WHICH CITY THEY'RE QUIERYING FROM. HOWEVER i CAN'T BE BOTHERED 
+    // TO IMPLEMENT THIS RIGHT NOW!
+
+    const getOriginLocality = (coordinates) => {
+        
+        () => {
+            fetch(
+                `https://maps.googleapis.com/maps/api/
+                geocode/json?latlng=${coordinates.lat},${coordinates.lng}&
+                location_type="ROOFTOP"&
+                result_type=locality&
+                key=${GOOGLE_MAPS_APIKEY}`
+            )
+            .then(
+                (data) => {
+
+                    const originLocality = data;
+                    console.log(originLocality);
+                }
+            )
+        };
+    };
+
+    const getDestinationLocality = (lat,lng) => {
+
+    };
+    // console.log(getOriginLocality(originCoordinates))
+    getOriginLocality(originCoordinates);
+
+    //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE FOR EXISTING DATA)
     const postRideInfoToFireStore = async () => {
+
         try {
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
+
                 departureDate: date.getTime(),
                 deparureTime: time.getTime(),
+                originDescription: originDescription,
+                originCoordinates: originCoordinates,
+                destinationDescription: destinationDescription,
+                destinationCoordinates: destinationCoordinates,
                 numberOfPassengers: numberOfPassengers,
-                pricePerSeat: pricePerSeat
-            },  { merge: true })
+                pricePerSeat: pricePerSeat,
+
+            },  { merge: true });
+            
         } catch (e) {
             console.error('Error adding doc: ', e);
         }
     };
 
+    //DISABLE THE PUBLISH BUTTON IF ORIGIN OR DESTINATION AREN'T CHOSEN
     const disablePublishButton = () => {
         if (originPicked == false || destinationPicked == false) {
             return true;
@@ -249,7 +304,7 @@ const PublishScreen = () => {
                 </View>
                 <View style={tw`items-center px-5`}>
                     <TouchableOpacity
-                        onPress={() => {handleIncrement()}}
+                        onPress={() => {addPassenger()}}
                     >     
                         <Icon
                             name='caret-up-outline'
@@ -261,7 +316,7 @@ const PublishScreen = () => {
                     <Text style={tw`font-semibold text-2xl`}>{numberOfPassengers}</Text>
 
                     <TouchableOpacity
-                        onPress={() => {handleDecrement()}}
+                        onPress={() => {removePassenger()}}
                     >
                         <Icon
                             name='caret-down-outline'
@@ -280,40 +335,49 @@ const PublishScreen = () => {
             </View>  
 
             {/* Price per seat */}
-            <View style={[tw`flex-row mx-3 mt-1 bg-black rounded-lg items-center`, {borderWidth: 0.3}]}>
+            <View style={[tw`flex-row mx-3 p-2 mt-1 bg-black rounded-lg items-center`, {borderWidth: 0.3}]}>
                 <View style={tw`p-5 border-r border-white w-1/2`}>
                     <Text style={tw`text-lg font-bold text-white`}>
                         Price per seat
                     </Text>
                 </View>
-                <View style={tw`flex-row p-2 px-7 items-center`}>
-                    <Text style={tw`text-white font-semibold text-2xl pr-2`}>
-                        £ 
+                <View style={tw` pl-5 pr-3 items-center`}>
+                    <TouchableOpacity
+                            onPress={() => {incrementPrice()}}
+                        >     
+                        <Icon
+                            name='add-outline'
+                            type='ionicon'
+                            color='white'
+                            size={40} 
+                        />
+                    </TouchableOpacity> 
+                    <TouchableOpacity
+                        onPress={() => {decrementPrice()}}
+                    >     
+                        <Icon
+                            name='remove-outline'
+                            type='ionicon'
+                            color='white'
+                            size={40} 
+                        />
+                    </TouchableOpacity> 
+                </View>
+                <View style={tw`border-white border rounded-2xl p-3`}>
+                    <Text style={tw`text-white font-semibold text-2xl`}>
+                        £ {pricePerSeat}
                     </Text>
-                    <TextInput
-                        style={{
-                            color: 'white',
-                            fontSize: 25,
-                            fontWeight: '500',
-                            width: 100,                            
-                        }}
-                        editable
-                        keyboardType='number-pad'
-                        maxLength={30}
-                        onChangeText={text => {onChangeText(text)}}
-                        value={pricePerSeat.toString()}
-                    />
                 </View>
             </View>         
 
             <View style={tw`m-5 justify-center`}>
                 <TouchableOpacity 
-                    style={tw`bg-white rounded-2xl p-2 items-center shadow-lg top-2/3
+                    style={tw`bg-blue-500 rounded-2xl p-3 items-center shadow-xl top-1/2
                     ${originPicked && destinationPicked ? '' : 'opacity-20'  }`}
                     onPress={() => {postRideInfoToFireStore()}}
                     disabled={disablePublishButton()}
                 >
-                    <Text style={tw`font-bold text-xl`}>
+                    <Text style={tw`font-bold text-white text-xl`}>
                         Publish
                     </Text>
                 </TouchableOpacity>
