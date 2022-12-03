@@ -40,8 +40,6 @@ const PublishScreen = () => {
     const [originCoordinates, setOriginCoordinates] = useState(null);
     const [destinationDescription, setDestinationDescription] = useState(null);
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
-    // const [originLocality, setOriginLocality] = useState(null);
-    // const [destinationLocality, setDestinationLocality] = useState(null);
 
     const minimumPricePerSeat = 5;
     const minimumNumberOfPassenger = 1;
@@ -120,15 +118,6 @@ const PublishScreen = () => {
 
         console.log('TESTING');
         Geocoder.init(GOOGLE_MAPS_APIKEY);
-        
-        // Geocoder.from({
-        //     lat : coordinates.lat,
-        //     lng : coordinates.lng
-        // })
-        // .then(data => {
-        //     const addressComponent = data.results[0].address_components[2];
-        //     data = addressComponent.short_name;
-        // }).then(data => (originInfo = data));
 
         const geocoderObject = await Geocoder.from({
             lat : coordinates.lat,
