@@ -40,6 +40,7 @@ const PublishScreen = () => {
     const [originCoordinates, setOriginCoordinates] = useState(null);
     const [destinationDescription, setDestinationDescription] = useState(null);
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+    const [publishButtonPressed, setPublishButtonPressed] = useState(false);
 
     const minimumPricePerSeat = 5;
     const minimumNumberOfPassenger = 1;
@@ -90,7 +91,6 @@ const PublishScreen = () => {
             console.error('Error setting origin: ', e);
         }
     };
-
     const addDestination = (data, detail) => {
         try {
             setDestinationDescription(detail);
@@ -114,16 +114,16 @@ const PublishScreen = () => {
 
         if (!coordinates) return;
 
-        console.log('TESTING');
         Geocoder.init(GOOGLE_MAPS_APIKEY);
 
+        //AWAIT RESPONSE FROM GEOCODER
         const geocoderObject = await Geocoder.from({
             lat: coordinates.lat,
             lng: coordinates.lng
         });
-        const locality = geocoderObject.results[0].address_components[2].short_name;
 
-        console.log('city: ' + locality);
+        //GET CITY NAME
+        const locality = geocoderObject.results[0].address_components[2].short_name;
         return locality;
     };
 
@@ -135,18 +135,23 @@ const PublishScreen = () => {
             const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
+                //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
                 departure_date: date.getTime(),
                 deparure_time: time.getTime(),
-                origin_description: originDescription,
+                origin_description: originDescription.toUpperCase(),
                 origin_coordinates: originCoordinates,
-                destination_description: destinationDescription,
+                destination_description: destinationDescription.toUpperCase(),
                 destination_coordinates: destinationCoordinates,
                 number_of_passengers: numberOfPassengers,
                 price_per_seat: pricePerSeat,
-                city_orgin: originLocality,
-                city_destination: destinationLocality,
+                city_orgin: originLocality.toUpperCase(),
+                city_destination: destinationLocality.toUpperCase(),
 
             }, { merge: true });
+
+            //MAYBE ADD A FUNCTION HERE TO DISPLAY LOADING PAGE
+            //CHANGE NAVIGATION ETC
+            setPublishButtonPressed(true);
 
         } catch (e) {
             console.error('Error adding doc: ', e);
