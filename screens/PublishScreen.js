@@ -13,11 +13,11 @@ import moment from 'moment'
 import Geocoder from 'react-native-geocoding';
 
 //generates a random ID to be reused to update the doc as ride info is added
-const makeid = function(length) {
-    let result           = '';
-    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const makeid = function (length) {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
+    for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
@@ -34,7 +34,7 @@ const PublishScreen = () => {
     const [pricePerSeat, setPricePerSeat] = useState(5.00);
     const [originPicked, setOriginPicked] = useState(false);
     const [destinationPicked, setDestinationPicked] = useState(false);
-    
+
     //CREATE MUTABLE VARIABLES FOR THE ORIGIN AND DESTTINATION
     const [originDescription, setOriginDescription] = useState(null);
     const [originCoordinates, setOriginCoordinates] = useState(null);
@@ -66,13 +66,13 @@ const PublishScreen = () => {
         setPricePerSeat(pricePerSeat - 1)
     };
 
-    const onChange = ( event, selectedDate ) => {
+    const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShowDatePicker(false);
         setDate(currentDate);
     };
 
-    const onChangeTimePicker = ( event, selectedTime ) => {
+    const onChangeTimePicker = (event, selectedTime) => {
         const currentTime = selectedTime;
         setShowTimePicker(false);
         setTime(currentTime);
@@ -97,7 +97,7 @@ const PublishScreen = () => {
             setDestinationCoordinates(data);
             setDestinationPicked(true);
         } catch (e) {
-            
+
             console.error('Error setting destination: ', e);
         }
     };
@@ -110,8 +110,6 @@ const PublishScreen = () => {
     //I.E A USER MAY BE ABLE TO TRAVEL A FEW MILES FROM THE ORIGIN/DESTINATION 
     // REGARDLESS OF WHICH CITY THEY'RE QUIERYING FROM. HOWEVER i CAN'T BE BOTHERED 
     // TO IMPLEMENT THIS RIGHT NOW!
-    let originInfo;
-
     const getLocality = async (coordinates) => {
 
         if (!coordinates) return;
@@ -120,21 +118,21 @@ const PublishScreen = () => {
         Geocoder.init(GOOGLE_MAPS_APIKEY);
 
         const geocoderObject = await Geocoder.from({
-            lat : coordinates.lat,
-            lng : coordinates.lng
+            lat: coordinates.lat,
+            lng: coordinates.lng
         });
         const locality = geocoderObject.results[0].address_components[2].short_name;
 
-        console.log('city: '+ locality);
+        console.log('city: ' + locality);
         return locality;
     };
-    
+
     //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
 
         try {
             const originLocality = await getLocality(originCoordinates);
-            const destinationLocality =  await getLocality(destinationCoordinates);    
+            const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
                 departure_date: date.getTime(),
@@ -148,8 +146,8 @@ const PublishScreen = () => {
                 city_orgin: originLocality,
                 city_destination: destinationLocality,
 
-            },  { merge: true });
-            
+            }, { merge: true });
+
         } catch (e) {
             console.error('Error adding doc: ', e);
         }
@@ -162,26 +160,26 @@ const PublishScreen = () => {
         }
     };
 
-  return (
-    <SafeAreaView style={tw`h-full bg-white`}>
-        {/* Header */}
-        <View style={tw`justify-center items-center bg-black py-3 mx-2 rounded-xl`}>
-            <Text style={tw`text-white text-xl font-semibold`}>
-                Your Trip
-            </Text>
-            <TouchableOpacity
-                onPress={() => navigation.navigate('HomeScreen')}
-                style={tw`absolute left-4 z-50 rounded-full
+    return (
+        <SafeAreaView style={tw`h-full bg-white`}>
+            {/* Header */}
+            <View style={tw`justify-center items-center bg-black py-3 mx-2 rounded-xl`}>
+                <Text style={tw`text-white text-xl font-semibold`}>
+                    Your Trip
+                </Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('HomeScreen')}
+                    style={tw`absolute left-4 z-50 rounded-full
                 shadow-lg`}>
-                <Icon name='chevron-back-outline'
-                    type='ionicon'
-                    color='white'
-                />
-            </TouchableOpacity>
-        </View>
-        {/* Trip info */}
-        <View style={tw`my-10 mx-3`}>
-            <GooglePlacesAutocomplete 
+                    <Icon name='chevron-back-outline'
+                        type='ionicon'
+                        color='white'
+                    />
+                </TouchableOpacity>
+            </View>
+            {/* Trip info */}
+            <View style={tw`my-10 mx-3`}>
+                <GooglePlacesAutocomplete
                     styles={{
                         container: {
                             flex: 0,
@@ -190,16 +188,16 @@ const PublishScreen = () => {
                                 width: 100,
                                 height: 100
                             }
-                          },
-                          textInput: {
+                        },
+                        textInput: {
                             height: 55,
                             borderWidth: 0.5,
                             fontSize: 15,
                             paddingHorizontal: 15,
                             marginBottom: 15
-                          },
+                        },
                     }}
-                    onPress={(data, detail=null) => {
+                    onPress={(data, detail = null) => {
                         addDeparture(detail.geometry.location, data.description);
                     }}
                     fetchDetails={true}
@@ -214,18 +212,18 @@ const PublishScreen = () => {
                     nearbyPlacesAPI='GooglePlacesSearch'
                     debounce={400}
                 />
-                <GooglePlacesAutocomplete 
+                <GooglePlacesAutocomplete
                     styles={{
                         container: {
                             flex: 0,
                             borderRadius: 20,
-                          },
-                          textInput: {
+                        },
+                        textInput: {
                             height: 55,
                             borderWidth: 0.5,
                             fontSize: 15,
                             paddingHorizontal: 15,
-                          },
+                        },
                     }}
                     onPress={(data, detail = null) => {
                         addDestination(detail.geometry.location, data.description);
@@ -245,15 +243,15 @@ const PublishScreen = () => {
             </View>
             <View style={tw`flex-row mx-3 rounded-lg border p-2 bg-black mt-2 items-center h-16`}>
                 <TouchableOpacity style={tw`flex-row items-center border-r border-white mr-2 w-1/2`}
-                onPress={() => setShowDatePicker(true)}
+                    onPress={() => setShowDatePicker(true)}
                 >
                     <Icon
                         name='calendar-outline'
                         type='ionicon'
                         color='white'
                         size={30}
-                        
-                    />   
+
+                    />
                     <Text style={tw`px-3 font-semibold text-white text-lg`}>
                         {/* {moment(date).format('ddd, DD MMM')} */}
                         {moment(date).format('ddd, DD MMM')}
@@ -269,17 +267,17 @@ const PublishScreen = () => {
                     )}
                 </TouchableOpacity>
                 <TouchableOpacity style={tw`flex-row items-center`}
-                onPress={() => { setShowTimePicker(true)}}>
-                        <Icon
-                            name='time-outline'
-                            color='white'
-                            type='ionicon'
-                            size={30}
-                        />
-                        <Text style={tw`px-5 text-white font-semibold text-lg`}>
-                            {moment(time).format('HH:mm')}
-                        </Text>
-                        {showTimePicker && (
+                    onPress={() => { setShowTimePicker(true) }}>
+                    <Icon
+                        name='time-outline'
+                        color='white'
+                        type='ionicon'
+                        size={30}
+                    />
+                    <Text style={tw`px-5 text-white font-semibold text-lg`}>
+                        {moment(time).format('HH:mm')}
+                    </Text>
+                    {showTimePicker && (
                         <DateTimePicker
                             testID="dateTimePicker"
                             value={date}
@@ -288,14 +286,14 @@ const PublishScreen = () => {
                             onChange={onChangeTimePicker}
                         />
                     )}
-                </TouchableOpacity>             
+                </TouchableOpacity>
             </View>
 
             {/* View to pick number of passengers */}
-            <View style={[tw`flex-row m-3 p-2 rounded-lg items-center`, {borderWidth: 0.3}]}>
+            <View style={[tw`flex-row m-3 p-2 rounded-lg items-center`, { borderWidth: 0.3 }]}>
                 <View style={tw`font-bold text-2xl w-1/2 border-r h-full p-5`}>
                     <Text style={tw`font-bold text-xl`}>
-                        How many 
+                        How many
                     </Text>
                     <Text style={tw`font-bold text-xl`}>
                         passengers?
@@ -303,19 +301,19 @@ const PublishScreen = () => {
                 </View>
                 <View style={tw`items-center px-5`}>
                     <TouchableOpacity
-                        onPress={() => {addPassenger()}}
-                    >     
+                        onPress={() => { addPassenger() }}
+                    >
                         <Icon
                             name='caret-up-outline'
                             type='ionicon'
                             color='black'
-                            size={40} 
+                            size={40}
                         />
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     <Text style={tw`font-semibold text-2xl`}>{numberOfPassengers}</Text>
 
                     <TouchableOpacity
-                        onPress={() => {removePassenger()}}
+                        onPress={() => { removePassenger() }}
                     >
                         <Icon
                             name='caret-down-outline'
@@ -323,7 +321,7 @@ const PublishScreen = () => {
                             color='black'
                             size={40}
                         />
-                    </TouchableOpacity>        
+                    </TouchableOpacity>
                 </View>
                 <View style={tw`px-3`}>
                     <Icon
@@ -331,10 +329,10 @@ const PublishScreen = () => {
                         size={40}
                     />
                 </View>
-            </View>  
+            </View>
 
             {/* Price per seat */}
-            <View style={[tw`flex-row mx-3 p-2 mt-1 bg-black rounded-lg items-center`, {borderWidth: 0.3}]}>
+            <View style={[tw`flex-row mx-3 p-2 mt-1 bg-black rounded-lg items-center`, { borderWidth: 0.3 }]}>
                 <View style={tw`p-5 border-r border-white w-1/2`}>
                     <Text style={tw`text-lg font-bold text-white`}>
                         Price per seat
@@ -342,49 +340,47 @@ const PublishScreen = () => {
                 </View>
                 <View style={tw` pl-5 pr-3 items-center`}>
                     <TouchableOpacity
-                            onPress={() => {incrementPrice()}}
-                        >     
+                        onPress={() => { incrementPrice() }}
+                    >
                         <Icon
                             name='add-outline'
                             type='ionicon'
                             color='white'
-                            size={40} 
+                            size={40}
                         />
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {decrementPrice()}}
-                    >     
+                        onPress={() => { decrementPrice() }}
+                    >
                         <Icon
                             name='remove-outline'
                             type='ionicon'
                             color='white'
-                            size={40} 
+                            size={40}
                         />
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                 </View>
                 <View style={tw`border-white border rounded-2xl p-3`}>
                     <Text style={tw`text-white font-semibold text-2xl`}>
                         £ {pricePerSeat}
                     </Text>
                 </View>
-            </View>         
+            </View>
 
             <View style={tw`m-5 justify-center`}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={tw`bg-blue-500 rounded-2xl p-3 items-center shadow-xl top-1/2
-                    ${originPicked && destinationPicked ? '' : 'opacity-20'  }`}
-                    onPress={() => {postRideInfoToFireStore()}}
+                    ${originPicked && destinationPicked ? '' : 'opacity-20'}`}
+                    onPress={() => { postRideInfoToFireStore() }}
                     disabled={disablePublishButton()}
                 >
                     <Text style={tw`font-bold text-white text-xl`}>
                         Publish
                     </Text>
                 </TouchableOpacity>
-            </View> 
-    </SafeAreaView>
-  )
+            </View>
+        </SafeAreaView>
+    )
 }
 
 export default PublishScreen
-
-const styles = StyleSheet.create({})
