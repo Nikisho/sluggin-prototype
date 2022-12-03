@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'tailwind-react-native-classnames'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,9 +10,9 @@ import db from '../firebase'
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'
-import { async } from '@firebase/util'
+import Geocoder from 'react-native-geocoding';
 
-    //generates a random ID to be reused to update the doc as ride info is added
+//generates a random ID to be reused to update the doc as ride info is added
 const makeid = function(length) {
     let result           = '';
     let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -40,24 +40,30 @@ const PublishScreen = () => {
     const [originCoordinates, setOriginCoordinates] = useState(null);
     const [destinationDescription, setDestinationDescription] = useState(null);
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+    // const [originLocality, setOriginLocality] = useState(null);
+    // const [destinationLocality, setDestinationLocality] = useState(null);
+
+    const minimumPricePerSeat = 5;
+    const minimumNumberOfPassenger = 1;
+    const maxNumberOfPassenger = 3;
 
     const addPassenger = () => {
-        if (numberOfPassengers >= 3) return;
+        if (numberOfPassengers >= maxNumberOfPassenger) return;
         setNumberOfPassengers(numberOfPassengers + 1);
     };
 
     const removePassenger = () => {
-        if (numberOfPassengers <= 1) return;
+        if (numberOfPassengers <= minimumNumberOfPassenger) return;
         setNumberOfPassengers(numberOfPassengers - 1);
     };
 
     const incrementPrice = () => {
         if (pricePerSeat >= 99) return;
-        setPricePerSeat(pricePerSeat+1);
+        setPricePerSeat(pricePerSeat + 1);
     };
 
     const decrementPrice = () => {
-        if (pricePerSeat <= 5) return;
+        if (pricePerSeat <= minimumPricePerSeat) return;
 
         setPricePerSeat(pricePerSeat - 1)
     };
@@ -93,11 +99,10 @@ const PublishScreen = () => {
             setDestinationCoordinates(data);
             setDestinationPicked(true);
         } catch (e) {
+            
             console.error('Error setting destination: ', e);
         }
     };
-
-    // console.log(destinationDescription);
 
     //HERE WE GET THE CITY NAME OF THE DEPARTURE POINT AND
     //DESTINATION TO ADD TO FIRESTORE AND MATCH THEM WITH
@@ -107,47 +112,52 @@ const PublishScreen = () => {
     //I.E A USER MAY BE ABLE TO TRAVEL A FEW MILES FROM THE ORIGIN/DESTINATION 
     // REGARDLESS OF WHICH CITY THEY'RE QUIERYING FROM. HOWEVER i CAN'T BE BOTHERED 
     // TO IMPLEMENT THIS RIGHT NOW!
+    let originInfo;
 
-    const getOriginLocality = (coordinates) => {
+    const getLocality = async (coordinates) => {
+
+        if (!coordinates) return;
+
+        console.log('TESTING');
+        Geocoder.init(GOOGLE_MAPS_APIKEY);
         
-        () => {
-            fetch(
-                `https://maps.googleapis.com/maps/api/
-                geocode/json?latlng=${coordinates.lat},${coordinates.lng}&
-                location_type="ROOFTOP"&
-                result_type=locality&
-                key=${GOOGLE_MAPS_APIKEY}`
-            )
-            .then(
-                (data) => {
+        // Geocoder.from({
+        //     lat : coordinates.lat,
+        //     lng : coordinates.lng
+        // })
+        // .then(data => {
+        //     const addressComponent = data.results[0].address_components[2];
+        //     data = addressComponent.short_name;
+        // }).then(data => (originInfo = data));
 
-                    const originLocality = data;
-                    console.log(originLocality);
-                }
-            )
-        };
+        const geocoderObject = await Geocoder.from({
+            lat : coordinates.lat,
+            lng : coordinates.lng
+        });
+        const locality = geocoderObject.results[0].address_components[2].short_name;
+
+        console.log('city: '+ locality);
+        return locality;
     };
-
-    const getDestinationLocality = (lat,lng) => {
-
-    };
-    // console.log(getOriginLocality(originCoordinates))
-    getOriginLocality(originCoordinates);
-
-    //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE FOR EXISTING DATA)
+    
+    //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
 
         try {
+            const originLocality = await getLocality(originCoordinates);
+            const destinationLocality =  await getLocality(destinationCoordinates);    
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
-                departureDate: date.getTime(),
-                deparureTime: time.getTime(),
-                originDescription: originDescription,
-                originCoordinates: originCoordinates,
-                destinationDescription: destinationDescription,
-                destinationCoordinates: destinationCoordinates,
-                numberOfPassengers: numberOfPassengers,
-                pricePerSeat: pricePerSeat,
+                departure_date: date.getTime(),
+                deparure_time: time.getTime(),
+                origin_description: originDescription,
+                origin_coordinates: originCoordinates,
+                destination_description: destinationDescription,
+                destination_coordinates: destinationCoordinates,
+                number_of_passengers: numberOfPassengers,
+                price_per_seat: pricePerSeat,
+                city_orgin: originLocality,
+                city_destination: destinationLocality,
 
             },  { merge: true });
             
