@@ -18,7 +18,6 @@ const HomeScreen = () => {
     const dispatch = useDispatch();
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShow(false);

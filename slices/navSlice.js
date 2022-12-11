@@ -4,7 +4,7 @@ const initialState = {
     origin: null,
     destination: null,
     rideScreen: null,
-    travelDate: new Date(),
+    travelDate: new Date().getTime(),
     travelTimeInformation: null,
 }
 

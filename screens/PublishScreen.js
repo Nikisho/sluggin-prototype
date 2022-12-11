@@ -123,10 +123,15 @@ const PublishScreen = () => {
         });
 
         //GET CITY NAME
-        const locality = geocoderObject.results[0].address_components[2].short_name;
+        const locality = geocoderObject.results[0].address_components[2].long_name;
+        const address_components = geocoderObject.results[0].address_components;
+        // console.log(address_components);
+        console.log(locality)
         return locality;
     };
-
+    
+    const cityTest = getLocality(originCoordinates);
+    const cityTest2 = getLocality(destinationCoordinates);
     //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
 
