@@ -123,7 +123,7 @@ const PublishScreen = () => {
         });
 
         //GET CITY NAME
-        const locality = geocoderObject.results[0].address_components[2].long_name;
+        const locality = geocoderObject.results[0].address_components[3].long_name;
         const address_components = geocoderObject.results[0].address_components;
         // console.log(address_components);
         console.log(locality)
@@ -141,6 +141,7 @@ const PublishScreen = () => {
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
                 //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
+                id: generateID,
                 departure_date: date.getTime(),
                 deparure_time: time.getTime(),
                 origin_description: originDescription.toUpperCase(),
