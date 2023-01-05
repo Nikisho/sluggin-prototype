@@ -123,15 +123,12 @@ const PublishScreen = () => {
         });
 
         //GET CITY NAME
-        const locality = geocoderObject.results[0].address_components[3].long_name;
+        const locality = geocoderObject.results[0].address_components[2].long_name + ', ' + geocoderObject.results[0].address_components[3].long_name;
         const address_components = geocoderObject.results[0].address_components;
-        // console.log(address_components);
         console.log(locality)
         return locality;
     };
     
-    const cityTest = getLocality(originCoordinates);
-    const cityTest2 = getLocality(destinationCoordinates);
     //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
 
@@ -144,14 +141,14 @@ const PublishScreen = () => {
                 id: generateID,
                 departure_date: date.getTime(),
                 deparure_time: time.getTime(),
-                origin_description: originDescription.toUpperCase(),
+                origin_description: originDescription,
                 origin_coordinates: originCoordinates,
-                destination_description: destinationDescription.toUpperCase(),
+                destination_description: destinationDescription,
                 destination_coordinates: destinationCoordinates,
                 number_of_passengers: numberOfPassengers,
                 price_per_seat: pricePerSeat,
-                city_orgin: originLocality.toUpperCase(),
-                city_destination: destinationLocality.toUpperCase(),
+                city_origin: originLocality,
+                city_destination: destinationLocality,
 
             }, { merge: true });
 
