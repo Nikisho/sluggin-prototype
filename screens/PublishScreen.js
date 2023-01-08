@@ -11,6 +11,8 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'
 import Geocoder from 'react-native-geocoding';
+import { useDispatch } from 'react-redux'
+import { setTravelTimeInformation } from '../slices/navSlice'
 
 //generates a random ID to be reused to update the doc as ride info is added
 const makeid = function (length) {
@@ -41,6 +43,7 @@ const PublishScreen = () => {
     const [destinationDescription, setDestinationDescription] = useState(null);
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
     const [publishButtonPressed, setPublishButtonPressed] = useState(false);
+    const [arrivalTime, setArrivalTIme] = useState('TEST');
 
     const minimumPricePerSeat = 5;
     const minimumNumberOfPassenger = 1;
@@ -123,24 +126,43 @@ const PublishScreen = () => {
         });
 
         //GET CITY NAME
-        const locality = geocoderObject.results[0].address_components[2].long_name + ', ' + geocoderObject.results[0].address_components[3].long_name;
-        const address_components = geocoderObject.results[0].address_components;
+        const locality = geocoderObject.results[0].address_components[2].long_name;
         console.log(locality)
         return locality;
     };
     
     //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
-
         try {
+            // const getTravelTime = async () => {
+                // await fetch(
+                // `https://maps.googleapis.com/maps/api/distancematrix/json?
+                // units=imperial
+                // &origins=${originDescription}&destinations=${
+                //     destinationDescription}&key=${GOOGLE_MAPS_APIKEY}`
+                // )
+                // .then((res) => res.json())
+                // .then((data) => {
+    
+                //     //dispatching travel info to redux, is this needed?
+                //     useDispatch(setTravelTimeInformation(data?.rows[0].elements[0]))
+    
+                //     //adding number of seconds to departure time to get arrival time to display on screen
+                //     const arrival_time = (data?.rows[0].elements[0].duration.value * 1000 ) + ride_departure_time ;
+                //     setArrivalTIme(arrival_time);
+                //     console.log(arrival_time)
+                // });
+            // };
+
             const originLocality = await getLocality(originCoordinates);
             const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
                 //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
                 id: generateID,
-                departure_date: date.getTime(),
-                deparure_time: time.getTime(),
+                arrival_time: arrivalTime,
+                departure_date: moment(date).format("L"),
+                departure_time: time.getTime(),
                 origin_description: originDescription,
                 origin_coordinates: originCoordinates,
                 destination_description: destinationDescription,

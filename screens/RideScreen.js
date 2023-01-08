@@ -1,25 +1,60 @@
 import { Image, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Map from '../components/Map'
 import tw from 'tailwind-react-native-classnames'
-import { useSelector } from 'react-redux'
-import { selectRideScreen, setRideScreen } from '../slices/navSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from '@rneui/base'
 import { collection, doc, getDoc, query } from 'firebase/firestore'
 import db from '../firebase'
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import moment from 'moment'
+import { GOOGLE_MAPS_APIKEY } from "@env";
 
 const RideScreen = () => {
-
+    const dispatch = useDispatch();
     const id = useSelector(selectRideScreen);
-    console.log(id);
+    const [arrivalTime, setArrivalTIme] = useState();
+
     const [rideData, loading] = useDocument(
         doc(db, 'TRIPS', id),
     );
-
-    console.log(rideData?.data());
     
+    const ride_origin = rideData != undefined ? rideData?.data().origin_description : null;
+    const ride_destination = rideData != undefined ? rideData?.data().origin_destination : null;
+    const ride_departure_time = rideData?.data().departure_time
+    //Needs to be calculated on publish not here!!!!
+    useEffect(() => {
+        if (!ride_origin || !ride_destination) return;
+
+        const getTravelTime = async () => {
+            fetch(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?
+            units=imperial
+            &origins=${ride_origin}&destinations=${
+                ride_destination}&key=${GOOGLE_MAPS_APIKEY}`
+            )
+            .then((res) => res.json())
+            .then((data) => {
+
+                //dispatching travel info to redux, is this needed?
+                dispatch(setTravelTimeInformation(data?.rows[0].elements[0]))
+
+                //adding number of seconds to departure time to get arrival time to display on screen
+                const arrival_time = (data?.rows[0].elements[0].duration.value * 1000 ) + ride_departure_time ;
+                setArrivalTIme(arrival_time);
+            });
+        };
+
+        getTravelTime();
+
+    }, [ride_destination, ride_origin, GOOGLE_MAPS_APIKEY]);
+
+    //TEST////////////////////////////////////////////////////
+    console.log('RIDE ID IS: ' + id);    
+
+    ////////////////////////////////////////////
     const data =
     {
         id: 3,
@@ -38,11 +73,13 @@ const RideScreen = () => {
         <View>
             {/* Map half of screen */}
             <View style={tw`h-1/3`}>
-                {/* <Map/> */}
+
+                {/* <Map
+                /> */}
             </View>
 
             {/* Ride information half */}
-            <View style={tw`h-2/3 m-4`} key={data.id}>
+            <View style={tw`h-2/3 m-4`}>
 
                 <View style={[tw``, {
                     borderBottomWidth: 0.5
@@ -58,10 +95,10 @@ const RideScreen = () => {
                                     resizeMode: 'contain',
                                     borderRadius: 100
                                 }}
-                                source={{ uri: data?.image }}
+                                source={{ uri: 'https://images.pexels.com/photos/1334945/pexels-photo-1334945.jpeg?auto=compress&cs=tinysrgb&w=1600' }}
                             />
                             <Text style={tw`text-xl font-semibold mx-3`}>
-                                {data?.name}
+                                {rideData?.data().name}
                             </Text>
                         </View>
 
@@ -87,7 +124,7 @@ const RideScreen = () => {
                 </View>
                 <View style={tw`py-3`}>
                     <Text style={tw`text-xl font-bold`}>
-                        {data.departure_date}
+                        {rideData?.data().departure_date}
                     </Text>
 
                     {/* Journey Info */}
@@ -120,10 +157,11 @@ const RideScreen = () => {
                         {/* Origin and departure time */}
                         <View style={tw`justify-between`}>
                             <Text style={tw`text-lg font-semibold`}>
-                                {data.departure_time} - {data.city_origin}
+                                {moment(ride_departure_time).format('hh:mm')} - {rideData?.data().city_origin}
                             </Text>
+
                             <Text style={tw`text-lg font-semibold`}>
-                                11:40 - Birmingham
+                                {moment(arrivalTime).format('hh:mm')} - {rideData?.data().city_destination}
                             </Text>
 
                         </View>

@@ -7,7 +7,7 @@ import { selectTravelDate, setRideScreen } from '../slices/navSlice'
 import moment from 'moment'
 import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
-import { collection, getDocs, query } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import db from '../firebase'
 
 const RideOptionsCard = () => {
@@ -16,8 +16,7 @@ const RideOptionsCard = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [rideData, setRideData] = useState([]);
-
-  const rideCollection = query(collection(db, "TRIPS"));
+  const rideCollection = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
 
   const pushRidesToArray = async function () {
     let dummyArray = [];
@@ -180,6 +179,7 @@ const RideOptionsCard = () => {
         renderItem={({ item: 
           {
             id, 
+            name,
             city_origin, 
             city_destination, 
             departure_time,
@@ -201,30 +201,30 @@ const RideOptionsCard = () => {
               </Text>
             </View>
             <View style={tw`flex-row justify-between pb-2`}>
-              <Text style={tw`text-lg`}>{departure_time}</Text>
-              {/* <Text style={tw`text-lg`}>{item.arrival_time}</Text> */}
+              <Text style={tw`text-lg`}>{moment(departure_time).format('hh:mm')}</Text>
+              <Text style={tw`text-lg`}>{moment(departure_time).format('hh:mm')}</Text>
             </View>
             <View style={tw`flex-row justify-between py-3`}>
 
               <View style={tw` items-center flex-row`}>
 
-                {/* <Image
+                <Image
                   style={{
                     width: 40,
                     height: 40,
                     resizeMode: 'contain',
                     borderRadius: 100
                   }}
-                  source={{ uri: image }}
-                /> */}
+                  source={{ uri: "https://images.pexels.com/photos/1334945/pexels-photo-1334945.jpeg?auto=compress&cs=tinysrgb&w=1600" }}
+                />
                 <View style={tw`px-4`}>
-                  {/* <Text style={tw`text-lg font-semibold`}>{name}</Text> */}
+                  <Text style={tw`text-lg font-semibold`}>{name}</Text>
                   {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
 
                   <View style={tw`items-center flex-row`}>
-                    {/* <Text style={tw`text-lg px-2`}>
-                      {reviews}
-                    </Text> */}
+                    <Text style={tw`text-lg px-2`}>
+                      4.5
+                    </Text>
                     <Icon
                       name='star'
                       type='ionicon'
