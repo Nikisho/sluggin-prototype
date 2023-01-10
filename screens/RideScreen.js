@@ -3,79 +3,57 @@ import React, { useEffect, useState } from 'react'
 import Map from '../components/Map'
 import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { selectDestination, selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
 import { Icon } from '@rneui/base'
-import { collection, doc, getDoc, query } from 'firebase/firestore'
+import { collection, doc } from 'firebase/firestore'
 import db from '../firebase'
-import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import {  useDocument } from 'react-firebase-hooks/firestore';
 import moment from 'moment'
-import { GOOGLE_MAPS_APIKEY } from "@env";
 
 const RideScreen = () => {
-    const dispatch = useDispatch();
     const id = useSelector(selectRideScreen);
-    const [arrivalTime, setArrivalTIme] = useState();
-
     const [rideData, loading] = useDocument(
         doc(db, 'TRIPS', id),
     );
-    
-    const ride_origin = rideData != undefined ? rideData?.data().origin_description : null;
-    const ride_destination = rideData != undefined ? rideData?.data().origin_destination : null;
-    const ride_departure_time = rideData?.data().departure_time
-    //Needs to be calculated on publish not here!!!!
-    useEffect(() => {
-        if (!ride_origin || !ride_destination) return;
-
-        const getTravelTime = async () => {
-            fetch(
-            `https://maps.googleapis.com/maps/api/distancematrix/json?
-            units=imperial
-            &origins=${ride_origin}&destinations=${
-                ride_destination}&key=${GOOGLE_MAPS_APIKEY}`
-            )
-            .then((res) => res.json())
-            .then((data) => {
-
-                //dispatching travel info to redux, is this needed?
-                dispatch(setTravelTimeInformation(data?.rows[0].elements[0]))
-
-                //adding number of seconds to departure time to get arrival time to display on screen
-                const arrival_time = (data?.rows[0].elements[0].duration.value * 1000 ) + ride_departure_time ;
-                setArrivalTIme(arrival_time);
-            });
-        };
-
-        getTravelTime();
-
-    }, [ride_destination, ride_origin, GOOGLE_MAPS_APIKEY]);
-
-    //TEST////////////////////////////////////////////////////
-    console.log('RIDE ID IS: ' + id);    
-
-    ////////////////////////////////////////////
-    const data =
-    {
-        id: 3,
-        name: 'Jasmine',
-        image: 'https://pps.whatsapp.net/v/t61.24694-24/120646598_196308208541947_5722960055077306099_n.jpg?ccb=11-4&oh=01_AdQ1YfZKrb6CdOixG-xJYjr4KxdwQhj4Ebjc94OB8pk2Xg&oe=637AA942',
-        origin: 'Washington DC',
-        destination: 'Brooklyn, NY',
-        departureTime: '10:10',
-        arrivalTime: '13:40',
-        reviews: '4.8',
-        price: '14'
-
+    const origin = {
+            description: rideData?.data().origin_description,
+            location:  rideData?.data().origin_coordinates
+    }
+    const destination = {
+        description: rideData?.data().destination_description,
+        location: rideData?.data().destination_coordinates
+    }
+    //TESTS////////////////////////////////////////////////////
+    console.log('RIDE ID IS: ' + id);   
+    console.log(origin) ;
+    //Timer to delay Map component
+    const Delayed = ({ children, waitBeforeShow = 500 }) => {
+        const [isShown, setIsShown] = useState(false);
+      
+        useEffect(() => {
+          const timer = setTimeout(() => {
+            setIsShown(true);
+          }, waitBeforeShow);
+          return () => clearTimeout(timer);
+        }, [waitBeforeShow]);
+      
+        return isShown ? children : null;
     };
 
+    ///////////////////////////////////////////
     return (
         <View>
             {/* Map half of screen */}
             <View style={tw`h-1/3`}>
 
-                {/* <Map
-                /> */}
+                <Delayed>
+                    <Map
+                        key={rideData?.data().id}
+                        origin={origin}
+                        destination={destination}
+                    />
+                </Delayed>
+
             </View>
 
             {/* Ride information half */}
@@ -111,7 +89,7 @@ const RideScreen = () => {
                     </View>
                     <View style={tw`flex-row mb-2 mt-3 items-center px-2`}>
                         <Text style={tw`font-bold text-lg pr-3`}>
-                            {data?.reviews}/5
+                            4/5
                         </Text>
                         <Icon
                             name='star'
@@ -157,11 +135,11 @@ const RideScreen = () => {
                         {/* Origin and departure time */}
                         <View style={tw`justify-between`}>
                             <Text style={tw`text-lg font-semibold`}>
-                                {moment(ride_departure_time).format('hh:mm')} - {rideData?.data().city_origin}
+                                {moment(rideData?.data().departure_time).format('hh:mm')} - {rideData?.data().city_origin}
                             </Text>
 
                             <Text style={tw`text-lg font-semibold`}>
-                                {moment(arrivalTime).format('hh:mm')} - {rideData?.data().city_destination}
+                                {moment(rideData?.data().arrival_time).format('hh:mm')} - {rideData?.data().city_destination}
                             </Text>
 
                         </View>

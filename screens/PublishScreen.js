@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'tailwind-react-native-classnames'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,12 +7,10 @@ import { useNavigation } from '@react-navigation/native'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { GOOGLE_MAPS_APIKEY } from '@env'
 import db from '../firebase'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'
 import Geocoder from 'react-native-geocoding';
-import { useDispatch } from 'react-redux'
-import { setTravelTimeInformation } from '../slices/navSlice'
 
 //generates a random ID to be reused to update the doc as ride info is added
 const makeid = function (length) {
@@ -43,7 +41,6 @@ const PublishScreen = () => {
     const [destinationDescription, setDestinationDescription] = useState(null);
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
     const [publishButtonPressed, setPublishButtonPressed] = useState(false);
-    const [arrivalTime, setArrivalTIme] = useState('TEST');
 
     const minimumPricePerSeat = 5;
     const minimumNumberOfPassenger = 1;
@@ -127,40 +124,41 @@ const PublishScreen = () => {
 
         //GET CITY NAME
         const locality = geocoderObject.results[0].address_components[2].long_name;
-        console.log(locality)
         return locality;
     };
-    
+
+    const getTravelTime = async () => {
+
+        try {
+            const fetchedData = await fetch(
+                `https://maps.googleapis.com/maps/api/distancematrix/json?
+                                units=imperial
+                                &origins=${originDescription}&destinations=${destinationDescription}&key=${GOOGLE_MAPS_APIKEY}`
+            );
+            const toJason = await fetchedData.json();
+            const arrival_time = (toJason?.rows[0].elements[0].duration.value * 1000) + time.getTime();
+            console.log(moment(arrival_time).format('hh:mm'));
+            return arrival_time;
+
+        } catch (error) {
+
+            console.error(error.message);
+        }
+    };
+
     //LOAD RIDE DATA TO FIRESTORE (MERGE = TRUE TO KEEP EXISTING DATA)
     const postRideInfoToFireStore = async () => {
-        try {
-            // const getTravelTime = async () => {
-                // await fetch(
-                // `https://maps.googleapis.com/maps/api/distancematrix/json?
-                // units=imperial
-                // &origins=${originDescription}&destinations=${
-                //     destinationDescription}&key=${GOOGLE_MAPS_APIKEY}`
-                // )
-                // .then((res) => res.json())
-                // .then((data) => {
-    
-                //     //dispatching travel info to redux, is this needed?
-                //     useDispatch(setTravelTimeInformation(data?.rows[0].elements[0]))
-    
-                //     //adding number of seconds to departure time to get arrival time to display on screen
-                //     const arrival_time = (data?.rows[0].elements[0].duration.value * 1000 ) + ride_departure_time ;
-                //     setArrivalTIme(arrival_time);
-                //     console.log(arrival_time)
-                // });
-            // };
 
+        try {
+
+            const arrival_time = await getTravelTime();
             const originLocality = await getLocality(originCoordinates);
             const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
                 //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
                 id: generateID,
-                arrival_time: arrivalTime,
+                arrival_time: arrival_time,
                 departure_date: moment(date).format("L"),
                 departure_time: time.getTime(),
                 origin_description: originDescription,
