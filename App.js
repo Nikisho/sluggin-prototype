@@ -9,6 +9,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import RideOptionsCard from './components/RideOptionsCard';
 import RideScreen from './screens/RideScreen';
 import PublishScreen from './screens/PublishScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -45,6 +46,13 @@ export default function App() {
               <Stack.Screen
                 name='PublishScreen'
                 component={PublishScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name='ProfileScreen'
+                component={ProfileScreen}
                 options={{
                   headerShown: false,
                 }}

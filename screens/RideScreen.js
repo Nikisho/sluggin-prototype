@@ -47,11 +47,11 @@ const RideScreen = () => {
             <View style={tw`h-1/3`}>
 
                 <Delayed>
-                    <Map
+                    {/* <Map
                         key={rideData?.data().id}
                         origin={origin}
                         destination={destination}
-                    />
+                    /> */}
                 </Delayed>
 
             </View>
@@ -64,7 +64,7 @@ const RideScreen = () => {
                 }]}>
 
                     <View style={tw`flex-row items-center justify-between`}>
-                        <View style={tw`flex-row `}>
+                        <View style={tw`flex-row items-center `}>
 
                             <Image
                                 style={{
@@ -102,7 +102,7 @@ const RideScreen = () => {
                 </View>
                 <View style={tw`py-3`}>
                     <Text style={tw`text-xl font-bold`}>
-                        {rideData?.data().departure_date}
+                        {moment(rideData?.data().departure_time).format("ddd, MM yyyy")}
                     </Text>
 
                     {/* Journey Info */}
@@ -145,6 +145,14 @@ const RideScreen = () => {
                         </View>
                     </View>
 
+                </View>
+                
+                <View style={tw` `}>
+                    <TouchableOpacity style={tw`mt-5 bg-black py-4 rounded-xl`}>
+                        <Text style={tw`text-center text-white font-bold text-xl`}>
+                            Select  
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>

@@ -157,13 +157,15 @@ const HomeScreen = () => {
                         Submit
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('ProfileScreen')}
+                >
                     <Icon
                         name='person'
                         size={40}
                     />
                     <Text>
-                        Account
+                        Profile
                     </Text>
                 </TouchableOpacity>
             </View>
