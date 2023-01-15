@@ -18,7 +18,7 @@ export default function App() {
       <SafeAreaProvider>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height "}
-          style={{ flex: 2 }}
+          style={{ flex: 1 }}
         >
           <NavigationContainer>
             <Stack.Navigator>
