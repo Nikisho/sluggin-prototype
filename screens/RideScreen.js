@@ -40,6 +40,13 @@ const RideScreen = () => {
         return isShown ? children : null;
     };
 
+    const selectRide = () => {
+        console.log('ride selected');
+        //changes activity (confirm details later)
+        //takes ride off the listing (changed value "selected" to yes in document and hide ride)
+        //publisher gets notification ride was selected
+    }
+
     ///////////////////////////////////////////
     return (
         <View>
@@ -59,7 +66,7 @@ const RideScreen = () => {
             {/* Ride information half */}
             <View style={tw`h-2/3 m-4`}>
 
-                <View style={[tw``, {
+                <View style={[tw`py-3`, {
                     borderBottomWidth: 0.5
                 }]}>
 
@@ -81,13 +88,13 @@ const RideScreen = () => {
                         </View>
 
                         <TouchableOpacity>
-                            <Icon style={tw`bg-blue-500 p-3 rounded-full`}
+                            <Icon style={tw`bg-blue-500 p-3 rounded-xl`}
                                 name='message'
                                 color='white'
                             />
                         </TouchableOpacity>
                     </View>
-                    <View style={tw`flex-row mb-2 mt-3 items-center px-2`}>
+                    {/* <View style={tw`flex-row mb-2 mt-3 items-center px-2`}>
                         <Text style={tw`font-bold text-lg pr-3`}>
                             4/5
                         </Text>
@@ -97,14 +104,18 @@ const RideScreen = () => {
                             color='green'
                             size={20}
                         />
-                    </View>
+                    </View> */}
 
                 </View>
                 <View style={tw`py-3`}>
-                    <Text style={tw`text-xl font-bold`}>
-                        {moment(rideData?.data().departure_time).format("ddd, MM yyyy")}
-                    </Text>
-
+                    <View style={tw`flex-row justify-between`}>
+                        <Text style={tw`text-xl font-bold`}>
+                            {moment(rideData?.data().departure_time).format("DD, MMM yyyy")}
+                        </Text>
+                        <Text style={tw`text-white bg-black text-lg py-2 px-3`}>
+                            £{rideData?.data().price_per_seat}
+                        </Text>
+                    </View>
                     {/* Journey Info */}
                     <View style={tw`flex-row py-8`}>
 
@@ -147,13 +158,14 @@ const RideScreen = () => {
 
                 </View>
                 
-                <View style={tw` `}>
-                    <TouchableOpacity style={tw`mt-5 bg-black py-4 rounded-xl`}>
+                    <TouchableOpacity 
+                        style={tw`mt-5 bg-black py-4 rounded-xl`}
+                        onPress={() => selectRide()}
+                    >
                         <Text style={tw`text-center text-white font-bold text-xl`}>
                             Select  
                         </Text>
                     </TouchableOpacity>
-                </View>
 
             </View>
 

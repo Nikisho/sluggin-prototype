@@ -237,9 +237,9 @@ const RideOptionsCard = () => {
 
               </View>
 
-              <View style={tw`justify-center h-10 bg-green-300 px-3 rounded-2xl`}>
-                <Text style={tw`text-lg font-bold text-white`}>
-                  ${price_per_seat}
+              <View style={tw`justify-center items-center bg-black h-10 w-14`}>
+                <Text style={tw`text-lg text-white `}>
+                  £{price_per_seat}
                 </Text>
               </View>
 
