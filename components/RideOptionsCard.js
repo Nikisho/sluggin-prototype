@@ -20,13 +20,15 @@ const RideOptionsCard = () => {
   const dispatch = useDispatch();
   const [rideData, setRideData] = useState([]);
   
-  const rideCollection = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
+  const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
+  const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
+  const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));
 
   const pushRidesToArray = async function () {
     let dummyArray = [];
     try {
 
-      const querySnapshot = await getDocs(rideCollection);
+      const querySnapshot = await getDocs(query_rides_3);
       console.log(querySnapshot)
       querySnapshot.forEach((document) => {
 
