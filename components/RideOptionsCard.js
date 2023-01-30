@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectTravelDate, setRideScreen } from '../slices/navSlice'
+import { selectDestination, selectOrigin, selectTravelDate, setRideScreen } from '../slices/navSlice'
 import moment from 'moment'
 import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
@@ -13,17 +13,23 @@ import db from '../firebase'
 const RideOptionsCard = () => {
 
   const date = useSelector(selectTravelDate);
+  const queriedOrigin = useSelector(selectOrigin);
+  const queriedDestination = useSelector(selectDestination);
+  console.log([queriedOrigin,queriedDestination] );
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [rideData, setRideData] = useState([]);
-  const rideCollection = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
+  
+  const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
+  const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
+  const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));
 
   const pushRidesToArray = async function () {
     let dummyArray = [];
     try {
 
-      const querySnapshot = await getDocs(rideCollection);
-
+      const querySnapshot = await getDocs(query_rides_3);
+      console.log(querySnapshot)
       querySnapshot.forEach((document) => {
 
           dummyArray.push(document.data());
@@ -35,7 +41,10 @@ const RideOptionsCard = () => {
     }
   };
 
-  pushRidesToArray();
+  useEffect(() => {
+    pushRidesToArray();
+  }, []);
+
 
   const data = [
     {
@@ -97,82 +106,6 @@ const RideOptionsCard = () => {
           {moment(date).format('ddd, DD MMM')}
         </Text>
       </View>
-
-      <FlatList
-        // data={data}
-        // keyExtractor={(item) => item.id}
-        // renderItem={({ item: { id, name, city_origin, city_destination, image, departure_time, arrival_time, reviews, price_per_seat } }) => (
-        //   <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}
-        //     onPress={() => selectRide(id)}
-        //   >
-        //     <View style={tw`flex-row justify-between `}>
-        //       <Text style={tw`font-bold`}>{city_origin}</Text>
-        //       <Icon
-        //         name='arrow-forward-circle-outline'
-        //         style={tw` rounded-full`}
-        //         type='ionicon'
-        //         color='black'
-        //       />
-        //       <Text style={tw`font-bold`}>
-        //         {city_destination}
-        //       </Text>
-        //     </View>
-        //     <View style={tw`flex-row justify-between pb-2`}>
-        //       <Text style={tw`text-lg`}>{departure_time}</Text>
-        //       <Text style={tw`text-lg`}>{arrival_time}</Text>
-        //     </View>
-        //     <View style={tw`flex-row justify-between py-3`}>
-
-        //       <View style={tw` items-center flex-row`}>
-
-        //         <Image
-        //           style={{
-        //             width: 40,
-        //             height: 40,
-        //             resizeMode: 'contain',
-        //             borderRadius: 100
-        //           }}
-        //           source={{ uri: image }}
-        //         />
-        //         <View style={tw`px-4`}>
-        //           <Text style={tw`text-lg font-semibold`}>{name}</Text>
-        //           {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
-
-        //           <View style={tw`items-center flex-row`}>
-        //             <Text style={tw`text-lg px-2`}>
-        //               {reviews}
-        //             </Text>
-        //             <Icon
-        //               name='star'
-        //               type='ionicon'
-        //               color='green'
-        //               size={20}
-        //             />
-        //           </View>
-
-        //         </View>
-
-        //       </View>
-
-        //       <View style={tw`justify-center h-10 bg-green-300 px-3 rounded-2xl`}>
-        //         <Text style={tw`text-lg font-bold text-white`}>
-        //           ${price_per_seat}
-        //         </Text>
-        //       </View>
-
-        //     </View>
-        //   </TouchableOpacity>
-        // )}
-      />
-      {/* <FlatList
-        data={rideData}
-        keyExtractor={(item) => item.id}
-        renderItem={({item: {id, price_per_seat}}) => (
-          <Text style={tw`p-10 text-xl`}>
-            {id}
-          </Text>
-        )}
-      /> */}
       <FlatList
         data={rideData}
         keyExtractor={(item) => item.id}

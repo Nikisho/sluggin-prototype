@@ -9,15 +9,18 @@ import { Button } from '@rneui/base';
 import { Icon } from "@rneui/themed";
 import { setDestination, setOrigin, setTravelDate } from '../slices/navSlice';
 import { useState } from 'react';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import Geocoder from 'react-native-geocoding';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
+    const [originLocality, setOriginLocality] = useState({});
+    const [destinationLocality, setDestinationLocality] = useState({});
+
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShow(false);
@@ -25,6 +28,37 @@ const HomeScreen = () => {
         dispatch(setTravelDate(currentDate.getTime()))
         console.log(currentDate.getTime() + ' LOOKHERE')
     };
+
+    const getLocality = async (coordinates) => {
+
+        if (!coordinates) return;
+
+        Geocoder.init(GOOGLE_MAPS_APIKEY);
+
+        //AWAIT RESPONSE FROM GEOCODER
+        const geocoderObject = await Geocoder.from({
+            lat: coordinates.lat,
+            lng: coordinates.lng
+        });
+
+        //GET CITY NAME
+        const locality = geocoderObject.results[0].address_components[2].long_name;
+        return locality;
+    };
+
+    const getLocalityAndDispatch = async (originCoords, destinationCoords) => {
+
+        let originLocalityName = await getLocality(originCoords);
+        let destinationLocalityName = await getLocality(destinationCoords);
+        console.log(destinationLocalityName);
+        dispatch(setOrigin({
+            cityName: originLocalityName,
+        }));
+
+        dispatch(setDestination({
+            cityName: destinationLocalityName,
+        }));
+    }
 
     return (
         <SafeAreaView style={tw`h-full`}>
@@ -44,8 +78,12 @@ const HomeScreen = () => {
                         dispatch(setOrigin({
                             location: details.geometry.location,
                             description: data.description
-                        }))
-                        dispatch(setDestination(null))
+                        }));
+                        setOriginLocality( originLocality => ({
+                            coordinates: details.geometry.location,
+                        }));
+                        console.log(originLocality.coordinates)
+                        dispatch(setDestination(null));
                     }}
                     fetchDetails={true}
                     returnKeyType={"search"}
@@ -80,7 +118,10 @@ const HomeScreen = () => {
                                 description: data.description,
                             })
                         );
-                        // navigation.navigate('RideOptionsCard');
+                        setDestinationLocality( destinationLocality => ({
+                            coordinates: details.geometry.location
+                        }));
+                        console.log(destinationLocality.coordinates)
                     }}
                     fetchDetails={true}
                     returnKeyType={"search"}
@@ -109,7 +150,12 @@ const HomeScreen = () => {
                     </Text>
                 </TouchableOpacity>
                 <Button
-                    onPress={() => navigation.navigate('RideOptionsCard')}
+                    onPress={() => {
+                        getLocalityAndDispatch(originLocality.coordinates, destinationLocality.coordinates)
+                        .then(
+                            () => navigation.navigate('RideOptionsCard')
+                        );
+                    }}
                     title="Search"
                     titleStyle={{
                         fontWeight: 'semibold',
