@@ -169,6 +169,7 @@ const PublishScreen = () => {
                 price_per_seat: pricePerSeat,
                 city_origin: originLocality,
                 city_destination: destinationLocality,
+                selected: false
 
             }, { merge: true });
 

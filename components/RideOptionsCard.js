@@ -15,14 +15,16 @@ const RideOptionsCard = () => {
   const date = useSelector(selectTravelDate);
   const queriedOrigin = useSelector(selectOrigin);
   const queriedDestination = useSelector(selectDestination);
-  console.log([queriedOrigin,queriedDestination] );
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [rideData, setRideData] = useState([]);
   
-  const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
-  const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
-  const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));
+  const query_rides_3 = query(collection(db, "TRIPS"));
+
+  // const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
+  // const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
+  // const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));
+  // const query_rides_4 = query(collection(db, "TRIPS"), where("selected", "==", false));
 
   const pushRidesToArray = async function () {
     let dummyArray = [];
