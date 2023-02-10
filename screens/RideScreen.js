@@ -5,13 +5,15 @@ import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectDestination, selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
 import { Icon } from '@rneui/base'
-import { collection, doc } from 'firebase/firestore'
+import { collection, doc, setDoc } from 'firebase/firestore'
 import db from '../firebase'
 import {  useDocument } from 'react-firebase-hooks/firestore';
 import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 
 const RideScreen = () => {
     const id = useSelector(selectRideScreen);
+    const navigation = useNavigation();
     const [rideData, loading] = useDocument(
         doc(db, 'TRIPS', id),
     );
@@ -40,8 +42,12 @@ const RideScreen = () => {
         return isShown ? children : null;
     };
 
-    const selectRide = () => {
+    const selectRide = async () => {
         console.log('ride selected');
+        const docRef = await setDoc(doc(db,'TRIPS',id), {
+            selected: true,
+        }, {merge: true});
+
         //changes activity (confirm details later)
         //takes ride off the listing (changed value "selected" to yes in document and hide ride)
         //publisher gets notification ride was selected
@@ -160,7 +166,7 @@ const RideScreen = () => {
                 
                     <TouchableOpacity 
                         style={tw`mt-5 bg-black py-4 rounded-xl`}
-                        onPress={() => selectRide()}
+                        onPress={() => selectRide().then(() => navigation.navigate('ConfirmRideDetailsScreen'))}
                     >
                         <Text style={tw`text-center text-white font-bold text-xl`}>
                             Select  
