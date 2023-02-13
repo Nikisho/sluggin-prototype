@@ -26,8 +26,10 @@ const RideScreen = () => {
         location: rideData?.data().destination_coordinates
     }
     //TESTS////////////////////////////////////////////////////
-    console.log('RIDE ID IS: ' + id);   
-    console.log(origin) ;
+    console.log(
+        {"doc_id": id},
+        {"location": origin}
+    );
     //Timer to delay Map component
     const Delayed = ({ children, waitBeforeShow = 500 }) => {
         const [isShown, setIsShown] = useState(false);
