@@ -121,7 +121,7 @@ const HomeScreen = () => {
                         setDestinationLocality( destinationLocality => ({
                             coordinates: details.geometry.location
                         }));
-                        console.log(destinationLocality.coordinates)
+                        console.log('destination is: '+ destinationLocality.coordinates)
                     }}
                     fetchDetails={true}
                     returnKeyType={"search"}
