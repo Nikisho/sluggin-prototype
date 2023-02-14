@@ -136,9 +136,16 @@ const PublishScreen = () => {
                                 &origins=${originDescription}&destinations=${destinationDescription}&key=${GOOGLE_MAPS_APIKEY}`
             );
             const toJason = await fetchedData.json();
+            const travel_time = toJason?.rows[0].elements[0].duration.value * 1000
             const arrival_time = (toJason?.rows[0].elements[0].duration.value * 1000) + time.getTime();
             console.log(moment(arrival_time).format('hh:mm'));
-            return arrival_time;
+            
+            const travel_info = {
+                travel_time: travel_time,
+                arrival_time: arrival_time
+            }
+            console.log(moment(travel_info.travel_time).format('hh:mm'));
+            return travel_info;
 
         } catch (error) {
 
@@ -151,14 +158,15 @@ const PublishScreen = () => {
 
         try {
 
-            const arrival_time = await getTravelTime();
+            const travel_info = await getTravelTime();
             const originLocality = await getLocality(originCoordinates);
             const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
                 //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
                 id: generateID,
-                arrival_time: arrival_time,
+                arrival_time: travel_info.arrival_time,
+                travel_time: travel_info.travel_time,
                 departure_date: moment(date).format("L"),
                 departure_time: time.getTime(),
                 origin_description: originDescription,
