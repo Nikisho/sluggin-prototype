@@ -10,7 +10,6 @@ import RideOptionsCard from './components/RideOptionsCard';
 import RideScreen from './screens/RideScreen';
 import PublishScreen from './screens/PublishScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import ConfirmRideDetailsScreen from './screens/ConfirmRideDetailsScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -58,13 +57,6 @@ export default function App() {
                   headerShown: false,
                 }}
              
-              />
-              <Stack.Screen
-                name='ConfirmRideDetailsScreen'
-                component={ConfirmRideDetailsScreen}
-                options={{
-                  headerShown: false,
-                }}
               />
             </Stack.Navigator>
           </NavigationContainer>
