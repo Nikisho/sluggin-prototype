@@ -10,6 +10,7 @@ import RideOptionsCard from './components/RideOptionsCard';
 import RideScreen from './screens/RideScreen';
 import PublishScreen from './screens/PublishScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import MyRidesScreen from './screens/MyRidesScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -56,7 +57,15 @@ export default function App() {
                 options={{
                   headerShown: false,
                 }}
-             
+
+              />
+              <Stack.Screen
+                name='MyRidesScreen'
+                component={MyRidesScreen}
+                options={{
+                  headerShown: false,
+                }}
+
               />
             </Stack.Navigator>
           </NavigationContainer>

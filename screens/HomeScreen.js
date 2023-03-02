@@ -193,6 +193,18 @@ const HomeScreen = () => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('MyRidesScreen')}
+                >
+                    <Icon
+                        name='car'
+                        size={40}
+                        type='ionicon'
+                    />
+                    <Text>
+                        Rides
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                     onPress={() => navigation.navigate('PublishScreen')}
                 >
                     <Icon
