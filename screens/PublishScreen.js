@@ -163,7 +163,7 @@ const PublishScreen = () => {
             const destinationLocality = await getLocality(destinationCoordinates);
             const docRef = await setDoc(doc(db, "TRIPS", generateID), {
 
-                //TURN DATA AND TIME TO NUMERIC VARS AND MAKE STRING VARS UPPERCASE
+                //TURN DATA AND TIME TO NUMERIC VARS
                 id: generateID,
                 arrival_time: travel_info.arrival_time,
                 travel_time: travel_info.travel_time,
@@ -200,7 +200,7 @@ const PublishScreen = () => {
     return (
         <SafeAreaView style={tw`h-full bg-white`}>
             {/* Header */}
-            <View style={tw`justify-center items-center bg-black py-3 mx-2 rounded-xl`}>
+            <View style={tw`justify-center items-center bg-black py-2 mx-2 rounded-xl`}>
                 <Text style={tw`text-white text-xl font-semibold`}>
                     Your Trip
                 </Text>

@@ -13,14 +13,14 @@ const ProfileScreen = () => {
       <SafeAreaView style={style.inner}>
         <View style={tw`mx-4`}>
 
-          <View style={tw`items-center bg-black py-3 rounded-xl`}>
+          <View style={tw`items-center bg-black py-2 rounded-xl`}>
             <Text style={tw`text-white text-xl font-semibold`}>
               About You
             </Text>
           </View>
 
           {/* image/name div */}
-          <View style={tw`border-b flex-row my-3 p-4 justify-between items-center `}>
+          <View style={tw`border-b flex-row p-4 justify-between items-center `}>
             <Image
               style={{
                 width: 80,
