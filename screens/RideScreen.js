@@ -187,7 +187,7 @@ const RideScreen = () => {
                     style={{
                         position: 'absolute',
                         top: '40%',
-                        right: '40%',
+                        right: '38%',
 
                         width: 100,
                         height: 100,

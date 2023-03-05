@@ -183,15 +183,6 @@ const HomeScreen = () => {
                 )}
             </View>
             <View style={[tw`flex-row justify-between absolute bottom-0 bg-white w-full h-20 p-3 px-10`, { borderTopWidth: 0.5 }]}>
-                <TouchableOpacity>
-                    <Icon
-                        name='home'
-                        size={40}
-                    />
-                    <Text>
-                        Home
-                    </Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('MyRidesScreen')}
                 >

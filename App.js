@@ -11,6 +11,7 @@ import RideScreen from './screens/RideScreen';
 import PublishScreen from './screens/PublishScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import MyRidesScreen from './screens/MyRidesScreen';
+import LoginScreen from './screens/LoginScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -23,6 +24,13 @@ export default function App() {
         >
           <NavigationContainer>
             <Stack.Navigator>
+            {/* <Stack.Screen
+                name='LoginScreen'
+                component={LoginScreen}
+                options={{
+                  headerShown: false,
+                }}
+              /> */}
               <Stack.Screen
                 name='HomeScreen'
                 component={HomeScreen}
