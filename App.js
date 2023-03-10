@@ -24,13 +24,13 @@ export default function App() {
         >
           <NavigationContainer>
             <Stack.Navigator>
-            {/* <Stack.Screen
+            <Stack.Screen
                 name='LoginScreen'
                 component={LoginScreen}
                 options={{
                   headerShown: false,
                 }}
-              /> */}
+              />
               <Stack.Screen
                 name='HomeScreen'
                 component={HomeScreen}
