@@ -5,10 +5,12 @@ import tw from 'tailwind-react-native-classnames'
 import { Icon } from '@rneui/base'
 import { SocialIcon } from "@rneui/themed";
 import { loginScreenImage } from '../images/images'
+import { useNavigation } from '@react-navigation/native'
 
 const LoginScreen = () => {
   const image = loginScreenImage;
-
+  const navigation = useNavigation();
+  
   const signUpWithGoogle = ()=> {
     try {
       console.log('sign up successful!')
@@ -29,7 +31,9 @@ const LoginScreen = () => {
         </View>
         <View style={tw`items-center top-1/2 mx-5`}>
 
-          <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}>
+          <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}
+            onPress={() => navigation.navigate("HomeScreen")}
+          >
             <SocialIcon
               type='google'
               iconSize={14}
