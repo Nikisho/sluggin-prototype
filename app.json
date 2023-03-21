@@ -29,12 +29,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "01b54f55-7db9-4fb7-b34d-a0c1312376db"
-      }
-    },
-    "owner": "phobereromain"
+    }
   }
 }
