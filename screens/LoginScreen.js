@@ -1,23 +1,51 @@
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 import { Icon } from '@rneui/base'
 import { SocialIcon } from "@rneui/themed";
 import { loginScreenImage } from '../images/images'
 import { useNavigation } from '@react-navigation/native'
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { AUTH_CLIENT_ID } from "@env";
 
+WebBrowser.maybeCompleteAuthSession();
+  
 const LoginScreen = () => {
   const image = loginScreenImage;
   const navigation = useNavigation();
-  
-  const signUpWithGoogle = ()=> {
+
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   androidClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
+  //   iosClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
+  //   expoClientId: 'test'
+  // });
+
+  // useEffect(() => {
+  //   if (response?.type === "success") {
+  //     setToken(response.authentication.accessToken);
+  //     getUserInfo();
+  //   }
+  // }, [response, token]);
+
+  const getUserInfo = async () => {
     try {
-      console.log('sign up successful!')
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      setUserInfo(user);
     } catch (error) {
-      
+      // Add your own error handler here
     }
-  }
+  };
 
   return (
     <SafeAreaView style={tw`h-full`}>
@@ -32,7 +60,10 @@ const LoginScreen = () => {
         <View style={tw`items-center top-1/2 mx-5`}>
 
           <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}
-            onPress={() => navigation.navigate("HomeScreen")}
+            onPress={() => {
+              promptAsync();
+            }}
+            // disabled={!request}
           >
             <SocialIcon
               type='google'
