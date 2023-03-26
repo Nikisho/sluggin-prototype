@@ -6,6 +6,10 @@ const initialState = {
     rideScreen: null,
     travelDate: new Date().getTime(),
     travelTimeInformation: null,
+    currentUser: {
+        userAuthenticationInfo: null,
+        isLoggedIn: false
+    }
 }
 
 export const navSlice = createSlice({
@@ -27,6 +31,9 @@ export const navSlice = createSlice({
         setTravelTimeInformation: (state, action) => {
             state.travelTimeInformation = action.payload;
         },
+        setCurrentUser: (state, action) => {
+            state.currentUser = action.payload;
+        }
     },
 });
 
@@ -35,14 +42,16 @@ export const {
     setDestination,
     setRideScreen,
     setTravelDate, 
-    setTravelTimeInformation 
+    setTravelTimeInformation,
+    setCurrentUser 
 } = navSlice.actions;
 
-//Selectors
+//////////////////////Selectors////////////////////////
 export const selectOrigin = (state) => state.nav.origin;
 export const selectDestination = (state) => state.nav.destination;
 export const selectRideScreen = (state) => state.nav.rideScreen;
 export const selectTravelDate = (state) => state.nav.travelDate;
 export const selectTravelTimeInformation = (state) => state.nav.travelTimeInformation;
+export const selectCurrentUser = (state) => state.nav.currentUser;
 
 export default navSlice.reducer;

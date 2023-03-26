@@ -9,23 +9,23 @@ import { useNavigation } from '@react-navigation/native'
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { AUTH_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCurrentUser, setCurrentUser } from '../slices/navSlice'
+import HomeScreen from './HomeScreen'
 
 WebBrowser.maybeCompleteAuthSession();
-    
-console.log(`${AUTH_CLIENT_ID}.apps.googleusercontent.com`);
+
 const LoginScreen = () => {
   const image = loginScreenImage;
-  const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
-
+  const currentUser = useSelector(selectCurrentUser);
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
-    iosClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
+    androidClientId: `${AUTH_CLIENT_ID}`,
+    iosClientId: `${AUTH_CLIENT_ID}`,
     expoClientId: `${EXPO_CLIENT_ID}`
   });
-
   useEffect(() => {
     if (response?.type === "success") {
       setToken(response.authentication.accessToken);
@@ -44,82 +44,92 @@ const LoginScreen = () => {
 
       const user = await response.json();
       setUserInfo(user);
+      dispatch(setCurrentUser({
+        userAuthenticationInfo: userInfo,
+        isLoggedIn: true
+      }))
     } catch (error) {
-      // Add your own error handler here
+      console.error(error.message)
     }
   };
+  
+  if (currentUser.isLoggedIn) {
 
-  return (
-    <SafeAreaView style={tw`h-full`}>
-      <ImageBackground source={image} resizeMode="cover" style={tw` h-full w-full`} blurRadius={3} >
+    return <HomeScreen/>
 
+  } else 
 
-        <View style={tw`items-center p-3`}>
-          <Text style={tw`font-bold text-2xl`}>
-            Start riding now!
-          </Text>
-        </View>
-        <View style={tw`items-center top-1/2 mx-5`}>
-
-          <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}
-            onPress={() => {
-              promptAsync();
-            }}
-            disabled={!request}
-          >
-            <SocialIcon
-              type='google'
-              iconSize={14}
-              style={{
-                padding: 0,
-                paddingHorizontal: 0
-              }}
-
-            />
-            <Text style={tw`text-white font-bold`}>Sign up with Google</Text>
-            <View style={tw`px-5`}>
-
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}>
-            <SocialIcon
-              type='facebook'
-              iconSize={14}
-              style={{
-                padding: 0,
-                paddingHorizontal: 0
-              }}
-
-            />
-            <Text style={tw`text-white font-bold`}>Sign up with Facebook</Text>
-            <View style={tw`px-5`}>
-
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={tw.style(` px-6 flex-row py-5 rounded-full bg-black w-full justify-between `)}>
-
-            <Icon
-              type='ionicon'
-              name='mail'
-              size={24}
-              color='white'
-            />
+    return (
+      <SafeAreaView style={tw`h-full`}>
+        <ImageBackground source={image} resizeMode="cover" style={tw` h-full w-full`} blurRadius={3} >
 
 
-            <Text style={tw`font-bold text-white `}>
-              Continue with email
+          <View style={tw`items-center p-3`}>
+            <Text style={tw`font-bold text-2xl`}>
+              Start riding now!
             </Text>
+          </View>
+          <View style={tw`items-center top-1/2 mx-5`}>
+
+            <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}
+              onPress={() => {
+                promptAsync();
+              }}
+              disabled={!request}
+            >
+              <SocialIcon
+                type='google'
+                iconSize={14}
+                style={{
+                  padding: 0,
+                  paddingHorizontal: 0
+                }}
+
+              />
+              <Text style={tw`text-white font-bold`}>Sign up with Google</Text>
+              <View style={tw`px-5`}>
+
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={tw.style(` p-3 flex-row py-3 mb-1 items-center rounded-full bg-black w-full justify-between `)}>
+              <SocialIcon
+                type='facebook'
+                iconSize={14}
+                style={{
+                  padding: 0,
+                  paddingHorizontal: 0
+                }}
+
+              />
+              <Text style={tw`text-white font-bold`}>Sign up with Facebook</Text>
+              <View style={tw`px-5`}>
+
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={tw.style(` px-6 flex-row py-5 rounded-full bg-black w-full justify-between `)}>
+
+              <Icon
+                type='ionicon'
+                name='mail'
+                size={24}
+                color='white'
+              />
 
 
-            <View style={tw`px-3`}>
-            </View>
+              <Text style={tw`font-bold text-white `}>
+                Continue with email
+              </Text>
 
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
-  )
+
+              <View style={tw`px-3`}>
+              </View>
+
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </SafeAreaView>
+    )
 }
 
 export default LoginScreen

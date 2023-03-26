@@ -4,9 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 import { Icon, Image } from '@rneui/base'
 import { Modal } from 'react-native'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../slices/navSlice'
 
 const ProfileScreen = () => {
   const mobileNumber = '+44 7463 030833'
+  const currentUser = useSelector(selectCurrentUser);
+  console.log(currentUser)
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -28,10 +32,10 @@ const ProfileScreen = () => {
                 resizeMode: 'contain',
                 borderRadius: 100
               }}
-              source={{ uri: 'https://images.pexels.com/photos/1334945/pexels-photo-1334945.jpeg?auto=compress&cs=tinysrgb&w=1600' }}
+              source={{ uri: `${currentUser.userAuthenticationInfo?.picture}` }}
             />
             <Text style={tw`font-bold text-xl`}>
-              Mike
+              {currentUser.userAuthenticationInfo?.name}
             </Text>
           </View>
 
