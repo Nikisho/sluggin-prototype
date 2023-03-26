@@ -8,28 +8,30 @@ import { loginScreenImage } from '../images/images'
 import { useNavigation } from '@react-navigation/native'
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { AUTH_CLIENT_ID } from "@env";
+import { AUTH_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
 
 WebBrowser.maybeCompleteAuthSession();
-  
+    
+console.log(`${AUTH_CLIENT_ID}.apps.googleusercontent.com`);
 const LoginScreen = () => {
   const image = loginScreenImage;
   const navigation = useNavigation();
 
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState(null);
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   androidClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
-  //   iosClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
-  //   expoClientId: 'test'
-  // });
 
-  // useEffect(() => {
-  //   if (response?.type === "success") {
-  //     setToken(response.authentication.accessToken);
-  //     getUserInfo();
-  //   }
-  // }, [response, token]);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
+    iosClientId: `${AUTH_CLIENT_ID}.apps.googleusercontent.com`,
+    expoClientId: `${EXPO_CLIENT_ID}`
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
 
   const getUserInfo = async () => {
     try {
@@ -63,7 +65,7 @@ const LoginScreen = () => {
             onPress={() => {
               promptAsync();
             }}
-            // disabled={!request}
+            disabled={!request}
           >
             <SocialIcon
               type='google'
