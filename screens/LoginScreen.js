@@ -12,6 +12,7 @@ import { AUTH_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser, setCurrentUser } from '../slices/navSlice'
 import HomeScreen from './HomeScreen'
+import { makeRedirectUri } from 'expo-auth-session'
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -24,7 +25,7 @@ const LoginScreen = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: `${AUTH_CLIENT_ID}`,
     iosClientId: `${AUTH_CLIENT_ID}`,
-    expoClientId: `${EXPO_CLIENT_ID}`
+    expoClientId: `${EXPO_CLIENT_ID}`,
   });
   useEffect(() => {
     if (response?.type === "success") {
@@ -44,12 +45,14 @@ const LoginScreen = () => {
 
       const user = await response.json();
       setUserInfo(user);
+      console.log(userInfo)
       dispatch(setCurrentUser({
         userAuthenticationInfo: userInfo,
         isLoggedIn: true
       }))
+    
     } catch (error) {
-      console.error(error.message)
+      console.error(error)
     }
   };
   
