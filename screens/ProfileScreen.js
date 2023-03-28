@@ -40,9 +40,6 @@ const ProfileScreen = () => {
           </View>
 
           {/* Bio div */}
-
-
-
           <View style={tw`flex-row justify-between`}>
             <Text style={tw`font-semibold text-lg`}>
               Introduction
