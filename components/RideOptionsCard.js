@@ -20,6 +20,7 @@ const RideOptionsCard = () => {
   const [rideData, setRideData] = useState([]);
 
   const query_rides_3 = query(collection(db, "TRIPS"));
+  const query_user = query(collection(db, "USERS"));
 
   // const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
   // const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
@@ -82,6 +83,7 @@ const RideOptionsCard = () => {
               city_destination,
               departure_time,
               price_per_seat,
+              driverUserId,
             } }) => (
             <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}
               onPress={() => selectRide(id)}
@@ -105,7 +107,7 @@ const RideOptionsCard = () => {
               <View style={tw`flex-row justify-between`}>
 
                 <View style={tw` items-center flex-row`}>
-
+              
                   <Image
                     style={{
                       width: 40,
@@ -113,7 +115,12 @@ const RideOptionsCard = () => {
                       resizeMode: 'contain',
                       borderRadius: 100
                     }}
-                    source={{ uri: "https://images.pexels.com/photos/1334945/pexels-photo-1334945.jpeg?auto=compress&cs=tinysrgb&w=1600" }}
+                    
+                    source={
+                      {
+                        
+                      }
+                    }
                   />
                   <View style={tw`px-4`}>
                     <Text style={tw`text-lg font-semibold`}>{name}</Text>

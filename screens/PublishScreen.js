@@ -11,6 +11,8 @@ import { doc, setDoc } from 'firebase/firestore'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'
 import Geocoder from 'react-native-geocoding';
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../slices/navSlice'
 
 //generates a random ID to be reused to update the doc as ride info is added
 const makeid = function (length) {
@@ -34,7 +36,7 @@ const PublishScreen = () => {
     const [pricePerSeat, setPricePerSeat] = useState(5.00);
     const [originPicked, setOriginPicked] = useState(false);
     const [destinationPicked, setDestinationPicked] = useState(false);
-
+    const currentUser = useSelector(selectCurrentUser)
     //CREATE MUTABLE VARIABLES FOR THE ORIGIN AND DESTTINATION
     const [originDescription, setOriginDescription] = useState(null);
     const [originCoordinates, setOriginCoordinates] = useState(null);
@@ -101,7 +103,7 @@ const PublishScreen = () => {
             console.error('Error setting destination: ', e);
         }
     };
-
+    console.log(currentUser.userAuthenticationInfo.id)
     //HERE WE GET THE CITY NAME OF THE DEPARTURE POINT AND
     //DESTINATION TO ADD TO FIRESTORE AND MATCH THEM WITH
     //THE RIGHT QUERIES.
@@ -177,7 +179,9 @@ const PublishScreen = () => {
                 price_per_seat: pricePerSeat,
                 city_origin: originLocality,
                 city_destination: destinationLocality,
-                selected: false
+                selected: false,
+                driverUserId : currentUser?.userAuthenticationInfo.id,
+                passengersIdArray: new Array()
 
             }, { merge: true });
 

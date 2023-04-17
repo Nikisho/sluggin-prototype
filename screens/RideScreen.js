@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import Map from '../components/Map'
 import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectDestination, selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
+import { selectCurrentUser, selectDestination, selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
 import { Icon } from '@rneui/base'
-import { collection, doc, setDoc } from 'firebase/firestore'
+import { arrayUnion, collection, doc, setDoc } from 'firebase/firestore'
 import db from '../firebase'
 import { useDocument } from 'react-firebase-hooks/firestore';
 import moment from 'moment'
@@ -16,6 +16,7 @@ const RideScreen = () => {
     const id = useSelector(selectRideScreen);
     const [selectedButtonPressed, setSelectedButtonPressed] = useState(false);
     const navigation = useNavigation();
+    const currentUser = useSelector(selectCurrentUser)
     const [rideData, loading] = useDocument(
         doc(db, 'TRIPS', id),
     );
@@ -51,6 +52,9 @@ const RideScreen = () => {
         const delay = ms => new Promise(res => setTimeout(res, ms));
         const docRef = await setDoc(doc(db, 'TRIPS', id), {
             selected: true,
+            //Add user id to array of passengers ID to firestore. 
+            //Remember to hide the ride if array.length == 3. Also cap array.length to 3
+            passengersIdArray: arrayUnion(currentUser?.userAuthenticationInfo.id,)
         }, { merge: true });
         setSelectedButtonPressed(true)
         await delay(3000);

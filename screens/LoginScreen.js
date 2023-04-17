@@ -12,7 +12,8 @@ import { AUTH_CLIENT_ID, EXPO_CLIENT_ID } from "@env";
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser, setCurrentUser } from '../slices/navSlice'
 import HomeScreen from './HomeScreen'
-import { makeRedirectUri } from 'expo-auth-session'
+import db from '../firebase'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -27,6 +28,7 @@ const LoginScreen = () => {
     iosClientId: `${AUTH_CLIENT_ID}`,
     expoClientId: `${EXPO_CLIENT_ID}`,
   });
+
   useEffect(() => {
     if (response?.type === "success") {
       setToken(response.authentication.accessToken);
@@ -35,6 +37,7 @@ const LoginScreen = () => {
   }, [response, token]);
 
   const getUserInfo = async () => {
+
     try {
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
@@ -42,25 +45,31 @@ const LoginScreen = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       const user = await response.json();
+
       setUserInfo(user);
-      console.log(userInfo)
+
+      console.log(userInfo);
+
       dispatch(setCurrentUser({
         userAuthenticationInfo: userInfo,
         isLoggedIn: true
-      }))
-    
+      }));
+      
+      const docRef = await setDoc(doc(db, "USERS", user.id), {
+        user: userInfo
+      });
+
     } catch (error) {
       console.error(error)
     }
   };
-  
+
   if (currentUser.isLoggedIn) {
 
-    return <HomeScreen/>
+    return <HomeScreen />
 
-  } else 
+  } else
 
     return (
       <SafeAreaView style={tw`h-full`}>
