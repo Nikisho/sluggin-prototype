@@ -7,7 +7,7 @@ import { selectDestination, selectOrigin, selectTravelDate, setRideScreen } from
 import moment from 'moment'
 import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import db from '../firebase'
 
 const RideOptionsCard = () => {
@@ -20,29 +20,40 @@ const RideOptionsCard = () => {
   const [rideData, setRideData] = useState([]);
 
   const query_rides_3 = query(collection(db, "TRIPS"));
-  const query_user = query(collection(db, "USERS"));
-
   // const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
   // const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
   // const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));
   // const query_rides_4 = query(collection(db, "TRIPS"), where("selected", "==", false));
 
   const pushRidesToArray = async function () {
-    let dummyArray = [];
+    let rawFirestoreDataArray = [];
+    let rideDataArray = [];
     try {
-
       const querySnapshot = await getDocs(query_rides_3);
-      querySnapshot.forEach((document) => {
-
-        dummyArray.push(document.data());
-
+      querySnapshot.forEach(async (document) => {
+        //Temporary array to push the data from firstore
+        rawFirestoreDataArray.push(document.data());
+        
       });
-      setRideData(dummyArray);
+      //After extracting the data use a normal for loop
+      //to match the documents id with the driver's id. 
+      for (const documentData of rawFirestoreDataArray) {
+        //in the USERS collection, each document represents a user 
+        //Each doc ID is the user's Id, we then match the doc id to the
+        //driverUserId is the TRIPS document
+        const docRef = doc(db, "USERS", documentData.driverUserId);
+        const docSnap = await getDoc(docRef);
+        documentData.DriverUserImage = docSnap.data().user.picture;
+        documentData.DriverUsername = docSnap.data().user.name;
+        rideDataArray.push(documentData);
+      }
+      setRideData(rideDataArray);
     } catch (error) {
       console.error(error.message)
     }
   };
 
+  //This prevents the ForEach from running infinitly, which causes infinite rerendering.
   useEffect(() => {
     pushRidesToArray();
   }, []);
@@ -78,12 +89,12 @@ const RideOptionsCard = () => {
           renderItem={({ item:
             {
               id,
-              name,
+              DriverUsername,
               city_origin,
               city_destination,
               departure_time,
               price_per_seat,
-              driverUserId,
+              DriverUserImage,
             } }) => (
             <TouchableOpacity style={tw`justify-between px-3 py-3 bg-white m-2 rounded-xl shadow-lg`}
               onPress={() => selectRide(id)}
@@ -107,7 +118,7 @@ const RideOptionsCard = () => {
               <View style={tw`flex-row justify-between`}>
 
                 <View style={tw` items-center flex-row`}>
-              
+
                   <Image
                     style={{
                       width: 40,
@@ -115,15 +126,15 @@ const RideOptionsCard = () => {
                       resizeMode: 'contain',
                       borderRadius: 100
                     }}
-                    
+
                     source={
                       {
-                        
+                        uri: DriverUserImage
                       }
                     }
                   />
                   <View style={tw`px-4`}>
-                    <Text style={tw`text-lg font-semibold`}>{name}</Text>
+                    <Text style={tw`text-lg font-semibold`}>{DriverUsername}</Text>
                     {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
 
                     <View style={tw`items-center flex-row`}>
