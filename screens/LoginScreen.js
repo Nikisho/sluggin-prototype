@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser, setCurrentUser } from '../slices/navSlice'
 import HomeScreen from './HomeScreen'
 import db from '../firebase'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -21,7 +21,6 @@ const LoginScreen = () => {
   const image = loginScreenImage;
   const dispatch = useDispatch();
   const [token, setToken] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
   const currentUser = useSelector(selectCurrentUser);
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: `${AUTH_CLIENT_ID}`,
@@ -46,18 +45,15 @@ const LoginScreen = () => {
         }
       );
       const user = await response.json();
-
-      setUserInfo(user);
-
-      console.log(userInfo);
+      console.log(user)
 
       dispatch(setCurrentUser({
-        userAuthenticationInfo: userInfo,
+        userAuthenticationInfo: user,
         isLoggedIn: true
       }));
-      
-      const docRef = await setDoc(doc(db, "USERS", user.id), {
-        user: userInfo
+
+      const docRef = await setDoc(doc(db, "USERS", user?.id), {
+        user: user
       });
 
     } catch (error) {
@@ -74,7 +70,6 @@ const LoginScreen = () => {
     return (
       <SafeAreaView style={tw`h-full`}>
         <ImageBackground source={image} resizeMode="cover" style={tw` h-full w-full`} blurRadius={3} >
-
 
           <View style={tw`items-center p-3`}>
             <Text style={tw`font-bold text-2xl`}>

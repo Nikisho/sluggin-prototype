@@ -23,6 +23,7 @@ const MyRidesScreen = () => {
                             color='white'
                         />
                     </TouchableOpacity>
+                    {/* {//if your ID matches with one of the passengerIds in the document, display the ride!} */}
                     <Text style={tw`text-xl text-white`}>
                         Your rides
                     </Text>
@@ -68,6 +69,7 @@ const MyRidesScreen = () => {
                         <UserRides/>
                     </TabView.Item>
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
+                        {/* {display ride if your id matches with driverID in ride doc} */}
                         <Text h1>Your Drive</Text>
                     </TabView.Item>
            

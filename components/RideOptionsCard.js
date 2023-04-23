@@ -49,7 +49,7 @@ const RideOptionsCard = () => {
       }
       setRideData(rideDataArray);
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
   };
 
