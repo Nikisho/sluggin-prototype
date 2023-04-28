@@ -26,6 +26,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "config": {
+        "googleMaps": {
+           "apiKey": "REPLACEWITHAPIKEY"
+        }
+      },
       "package": "com.phobereromain.slugginprototype"
     },
     "web": {

@@ -4,7 +4,7 @@ import tw from 'tailwind-react-native-classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDestination, selectOrigin, selectTravelTimeInformation, setTravelTimeInformation } from '../slices/navSlice';
 import { GOOGLE_MAPS_APIKEY } from "@env";
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { useRef } from 'react';
 import { useEffect } from 'react';
@@ -28,7 +28,8 @@ const Map = ({origin, destination}) => {
     <MapView
         ref={mapRef}
         style={tw`flex-1`}
-        mapType="mutedStandard"
+        mapType="standard"
+        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: origin.location.lat,
           longitude: origin.location.lng,

@@ -5,7 +5,7 @@ import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser, selectDestination, selectRideScreen, selectTravelTimeInformation, setRideScreen, setTravelTimeInformation } from '../slices/navSlice'
 import { Icon } from '@rneui/base'
-import { arrayUnion, collection, doc, setDoc } from 'firebase/firestore'
+import { arrayUnion, collection, doc, getDoc, query, setDoc } from 'firebase/firestore'
 import db from '../firebase'
 import { useDocument } from 'react-firebase-hooks/firestore';
 import moment from 'moment'
@@ -13,26 +13,44 @@ import { useNavigation } from '@react-navigation/native'
 import FadeInView from '../components/FadeInView'
 
 const RideScreen = () => {
+
     const id = useSelector(selectRideScreen);
     const [selectedButtonPressed, setSelectedButtonPressed] = useState(false);
     const navigation = useNavigation();
-    const currentUser = useSelector(selectCurrentUser)
-    const [rideData, loading] = useDocument(
-        doc(db, 'TRIPS', id),
-    );
+    const currentUser = useSelector(selectCurrentUser);
+    const [rideData, setRideData] = useState(null);
+    const [userData, setUserData] = useState(null);
+    const extractFirestoreData = async () => {
+        try {
+            const queryRideData = query(doc(db, 'TRIPS', id));
+            const docRef = await getDoc(queryRideData);
+            if (docRef.exists()) {
+                setRideData(docRef);
+            };
+            const queryUserData = query(doc(db, 'USERS', docRef?.data().driverUserId));
+            const userDocRef = await getDoc(queryUserData);
+            if (userDocRef.exists()) {
+                setUserData(userDocRef);
+            }
+
+        } catch (err) {
+            console.error(err.message)
+        }
+    };
+
+    useEffect(() => {
+        extractFirestoreData();
+    }, []);
     const origin = {
         description: rideData?.data().origin_description,
         location: rideData?.data().origin_coordinates
     }
+    console.log(origin)
     const destination = {
         description: rideData?.data().destination_description,
         location: rideData?.data().destination_coordinates
     }
-    //TESTS////////////////////////////////////////////////////
-    console.log(
-        { "doc_id": id },
-        { "location": origin }
-    );
+    // console.table(origin, destination)
     //Timer to delay Map component
     const Delayed = ({ children, waitBeforeShow = 500 }) => {
         const [isShown, setIsShown] = useState(false);
@@ -59,7 +77,7 @@ const RideScreen = () => {
         setSelectedButtonPressed(true)
         await delay(3000);
         //publisher gets notification ride was selected
-    }
+    };
 
     ///////////////////////////////////////////
     return (
@@ -70,11 +88,11 @@ const RideScreen = () => {
                 <View style={tw`h-1/3`}>
 
                     <Delayed>
-                        {/* <Map
+                        <Map
                         key={rideData?.data().id}
                         origin={origin}
                         destination={destination}
-                    /> */}
+                    />
                     </Delayed>
                 </View>
 
@@ -87,18 +105,21 @@ const RideScreen = () => {
 
                         <View style={tw`flex-row items-center justify-between`}>
                             <View style={tw`flex-row items-center `}>
+                                {/* wait for image to load from firestore before displaying  */}
+                                {userData?.data().user.picture && (
+                                    <Image
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            resizeMode: 'contain',
+                                            borderRadius: 100
+                                        }}
+                                        source={{ uri: userData?.data().user.picture }}
+                                    />
+                                )}
 
-                                <Image
-                                    style={{
-                                        width: 50,
-                                        height: 50,
-                                        resizeMode: 'contain',
-                                        borderRadius: 100
-                                    }}
-                                    source={{ uri: 'https://images.pexels.com/photos/1334945/pexels-photo-1334945.jpeg?auto=compress&cs=tinysrgb&w=1600' }}
-                                />
                                 <Text style={tw`text-xl font-semibold mx-3`}>
-                                    {rideData?.data().name}
+                                    {userData?.data().user.name}
                                 </Text>
                             </View>
 
