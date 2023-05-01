@@ -51,7 +51,7 @@ const LoginScreen = () => {
         userAuthenticationInfo: user,
         isLoggedIn: true
       }));
-
+      
       const docRef = await setDoc(doc(db, "USERS", user?.id), {
         user: user
       });

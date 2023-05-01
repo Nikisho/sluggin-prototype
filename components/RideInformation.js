@@ -33,7 +33,7 @@ const RideInformation = ({userData, rideData}) => {
                     </View>
 
                     <TouchableOpacity>
-                        <Icon style={tw`bg-blue-500 p-3 rounded-xl`}
+                        <Icon style={tw`bg-blue-500 p-3 px-4 rounded-xl`}
                             name='message'
                             color='white'
                         />
@@ -57,7 +57,7 @@ const RideInformation = ({userData, rideData}) => {
                     <Text style={tw`text-xl font-bold`}>
                         {moment(rideData?.data().departure_time).format("DD, MMM yyyy")}
                     </Text>
-                    <Text style={tw`text-white bg-black text-lg py-2 px-3`}>
+                    <Text style={tw`text-white bg-green-500 rounded-xl text-lg py-2 px-3`}>
                         £{rideData?.data().price_per_seat}
                     </Text>
                 </View>

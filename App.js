@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
-import {  Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import HomeScreen from './screens/HomeScreen';
 import { store } from './store';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import PublishScreen from './screens/PublishScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import MyRidesScreen from './screens/MyRidesScreen';
 import LoginScreen from './screens/LoginScreen';
+import UserDriverRideScreen from './screens/UserDriverRideScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -24,7 +25,7 @@ export default function App() {
         >
           <NavigationContainer>
             <Stack.Navigator>
-            <Stack.Screen
+              <Stack.Screen
                 name='LoginScreen'
                 component={LoginScreen}
                 options={{
@@ -70,6 +71,14 @@ export default function App() {
               <Stack.Screen
                 name='MyRidesScreen'
                 component={MyRidesScreen}
+                options={{
+                  headerShown: false,
+                }}
+
+              />
+              <Stack.Screen
+                name='UserDriverRideScreen'
+                component={UserDriverRideScreen}
                 options={{
                   headerShown: false,
                 }}

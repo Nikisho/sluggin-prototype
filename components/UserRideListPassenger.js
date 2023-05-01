@@ -3,7 +3,7 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 
-const UserRides = () => {
+const UserRideListPassenger = () => {
     //Fetch the user id and render the rides that corresponds to the user id
     
   return (
@@ -15,6 +15,6 @@ const UserRides = () => {
   )
 }
 
-export default UserRides
+export default UserRideListPassenger
 
 const styles = StyleSheet.create({})

@@ -6,13 +6,21 @@ import { Icon, Image } from '@rneui/base'
 import { useDispatch } from 'react-redux'
 import { setRideScreen } from '../slices/navSlice'
 import { useNavigation } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native';
 
-const RideList = ({RideData}) => {
+const RideList = ({RideData, screen}) => {
+    const route = useRoute();
+    console.log(route.name)
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const selectRide = async (id) => {
         dispatch(setRideScreen(id));
-        navigation.navigate('RideScreen');
+        if (route.name === "RideOptionCard") {
+            navigation.navigate("RideScreen");
+        } else if (route.name === "MyRidesScreen") {
+            navigation.navigate("UserDriverRideScreen");
+        }
+            
     };
     return (
         <View >

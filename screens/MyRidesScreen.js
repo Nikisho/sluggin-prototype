@@ -4,9 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 import { Icon, Tab, TabView } from '@rneui/themed'
 import { useNavigation } from '@react-navigation/native'
-import RideOptionsCard from '../components/RideOptionsCard'
-import UserRides from '../components/UserRides'
 import UserRideListDriver from '../components/UserRideListDriver'
+import UserRideListPassenger from '../components/UserRideListPassenger'
 
 const MyRidesScreen = () => {
     const navigation = useNavigation();
@@ -45,7 +44,7 @@ const MyRidesScreen = () => {
                 }}
             >
                 <Tab.Item
-                    title="You ride"
+                    title="Passenger"
                     titleStyle={{ fontSize: 12, color: 'black' }}
                     icon={{ name: 'person', type: 'ionicon', color: 'black' }}
                     containerStyle={{
@@ -54,7 +53,7 @@ const MyRidesScreen = () => {
                     }}
                 />
                 <Tab.Item
-                    title="You drive"
+                    title="Driver"
                     titleStyle={{ fontSize: 12, color: 'black' }}
                     icon={{ name: 'car', type: 'ionicon', color: 'black' }}
                     containerStyle={{
@@ -67,7 +66,7 @@ const MyRidesScreen = () => {
 
             >
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-                        <UserRides/>
+                        <UserRideListPassenger/>
                     </TabView.Item>
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
                         {/* {display ride if your id matches with driverID in ride doc} */}
