@@ -6,6 +6,7 @@ import { Icon, Tab, TabView } from '@rneui/themed'
 import { useNavigation } from '@react-navigation/native'
 import RideOptionsCard from '../components/RideOptionsCard'
 import UserRides from '../components/UserRides'
+import UserRideListDriver from '../components/UserRideListDriver'
 
 const MyRidesScreen = () => {
     const navigation = useNavigation();
@@ -14,7 +15,7 @@ const MyRidesScreen = () => {
     return (
         <>
             <SafeAreaView>
-                <View style={tw`mx-2 rounded-xl justify-center items-center h-12 bg-black`}>
+                <View style={tw`mx-2 rounded-xl my-2 justify-center items-center h-12 bg-black`}>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('HomeScreen')}
                         style={tw`absolute left-4 z-50 rounded-full shadow-lg`}>
@@ -70,7 +71,7 @@ const MyRidesScreen = () => {
                     </TabView.Item>
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
                         {/* {display ride if your id matches with driverID in ride doc} */}
-                        <Text h1>Your Drive</Text>
+                        <UserRideListDriver />
                     </TabView.Item>
            
             </TabView>

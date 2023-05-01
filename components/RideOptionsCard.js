@@ -9,6 +9,7 @@ import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import db from '../firebase'
+import RideList from './RideList'
 
 const RideOptionsCard = () => {
 
@@ -58,11 +59,6 @@ const RideOptionsCard = () => {
     pushRidesToArray();
   }, []);
 
-  const selectRide = async (id) => {
-    dispatch(setRideScreen(id));
-    navigation.navigate('RideScreen');
-  };
-
   return (
     <SafeAreaView style={tw``}>
       {/* Header */}
@@ -80,7 +76,7 @@ const RideOptionsCard = () => {
           {moment(date).format('ddd, DD MMM')}
         </Text>
       </View>
-      <View >
+      {/* <View >
         <FlatList
           contentContainerStyle={{ paddingBottom: 100 }}
           data={rideData}
@@ -135,7 +131,7 @@ const RideOptionsCard = () => {
                   />
                   <View style={tw`px-4`}>
                     <Text style={tw`text-lg font-semibold`}>{DriverUsername}</Text>
-                    {/* <Text>{travelTimeInformation?.duration?.text}</Text> */}
+            
 
                     <View style={tw`items-center flex-row`}>
                       <Text style={tw`text-lg px-2`}>
@@ -163,7 +159,10 @@ const RideOptionsCard = () => {
             </TouchableOpacity>
           )}
         />
-      </View>
+      </View> */}
+      <RideList 
+        RideData={rideData}
+      />
     </SafeAreaView>
   )
 }
