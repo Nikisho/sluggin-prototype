@@ -6,6 +6,7 @@ import { Icon, Tab, TabView } from '@rneui/themed'
 import { useNavigation } from '@react-navigation/native'
 import UserRideListDriver from '../components/UserRideListDriver'
 import UserRideListPassenger from '../components/UserRideListPassenger'
+import ConfirmationAlert from '../components/ConfirmationAlert'
 
 const MyRidesScreen = () => {
     const navigation = useNavigation();
@@ -67,6 +68,7 @@ const MyRidesScreen = () => {
             >
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
                         <UserRideListPassenger/>
+                        
                     </TabView.Item>
                     <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
                         {/* {display ride if your id matches with driverID in ride doc} */}

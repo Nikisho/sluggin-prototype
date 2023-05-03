@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser, selectRideScreen } from '../slices/navSlice';
-import { doc, getDoc, query } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, query } from 'firebase/firestore';
 import tw from 'tailwind-react-native-classnames';
 import RideInformation from '../components/RideInformation';
 import db from '../firebase';
 import Map from '../components/Map';
+import cancelTripAlert from '../components/ConfirmationAlert';
 
 const UserDriverRideScreen = () => {
     const id = useSelector(selectRideScreen);
@@ -62,9 +63,22 @@ const UserDriverRideScreen = () => {
 
         return isShown ? children : null;
     };
+    //cancel ride -- delete firestore doc
+    const cancelRide = async () => {
+        let alert = await cancelTripAlert()
 
-    const cancelRide = () => {
-        console.log('CANCELLED');
+        if (alert === true) {
+            try {
+
+                await deleteDoc(doc(db, "TRIPS", id));
+                console.log('CANCELLED');
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        // await navigation.navigate("MyRideScreen");
     }
 
     return (
@@ -72,11 +86,11 @@ const UserDriverRideScreen = () => {
             <View style={tw`h-1/3`}>
 
                 <Delayed>
-                    <Map
+                    {/* <Map
                         key={rideData?.data().id}
                         origin={origin}
                         destination={destination}
-                    />
+                    /> */}
                 </Delayed>
             </View>
             <View style={tw`h-2/3 m-4`}>
@@ -88,10 +102,10 @@ const UserDriverRideScreen = () => {
 
                 <TouchableOpacity
                     style={tw`mt-5 bg-red-500 py-4 rounded-xl`}
-                    onPress={() => cancelRide().then(() => navigation.navigate("HomeScreen"))}
+                    onPress={() => cancelRide()}
                 >
                     <Text style={tw`text-center text-white font-bold text-xl`}>
-                        Cancel tripe
+                        Cancel trip
                     </Text>
                 </TouchableOpacity>
 
