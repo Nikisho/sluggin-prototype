@@ -15,7 +15,7 @@ const RideList = ({RideData, screen}) => {
     const dispatch = useDispatch();
     const selectRide = async (id) => {
         dispatch(setRideScreen(id));
-        if (route.name === "RideOptionCard") {
+        if (route.name === "RideOptionsCard") {
             navigation.navigate("RideScreen");
         } else if (route.name === "MyRidesScreen") {
             navigation.navigate("UserDriverRideScreen");

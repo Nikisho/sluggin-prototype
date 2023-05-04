@@ -1,9 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser, selectRideScreen } from '../slices/navSlice';
-import { deleteDoc, doc, getDoc, query } from 'firebase/firestore';
+import { arrayRemove, deleteDoc, doc, getDoc, query, setDoc } from 'firebase/firestore';
 import tw from 'tailwind-react-native-classnames';
 import RideInformation from '../components/RideInformation';
 import db from '../firebase';
@@ -12,7 +12,6 @@ import cancelTripAlert from '../components/ConfirmationAlert';
 
 const UserDriverRideScreen = () => {
     const id = useSelector(selectRideScreen);
-    const [selectedButtonPressed, setSelectedButtonPressed] = useState(false);
     const navigation = useNavigation();
     const currentUser = useSelector(selectCurrentUser);
     const [rideData, setRideData] = useState(null);
@@ -63,24 +62,40 @@ const UserDriverRideScreen = () => {
 
         return isShown ? children : null;
     };
-    //cancel ride -- delete firestore doc
+    //cancel ride -- delete firestore doc or update array if passenger
     const cancelRide = async () => {
         let alert = await cancelTripAlert()
-
         if (alert === true) {
-            try {
+            if (rideData.data().driverUserId !== currentUser.userAuthenticationInfo.id) {
+                // if (alert === true) {
+                //     try {
 
-                await deleteDoc(doc(db, "TRIPS", id));
-                console.log('CANCELLED');
+                //         await deleteDoc(doc(db, "TRIPS", id));
+                //         console.log('CANCELLED');
 
-            } catch (error) {
-                console.error(error.message);
+                //     } catch (error) {
+                //         console.error(error.message);
+                //     }
+                // }
+
+            }  else if (rideData.data().passengersIdArray.includes(currentUser.userAuthenticationInfo.id)) {
+                     
+                    try {
+
+                        const docRef = await setDoc(doc(db, 'TRIPS', id), {
+                            //Remove user id to array of passengers ID to firestore. 
+                            //Remember to hide the ride if array.length == 3. Also cap array.length to 3
+                            passengersIdArray: arrayRemove(currentUser?.userAuthenticationInfo.id)
+                        }, { merge: true });   
+
+                    } catch (error) {
+                        console.error(error.message);
+                    }
+                    
             }
-        }
-
+        } 
         // await navigation.navigate("MyRideScreen");
-    }
-
+    } 
     return (
         <View>
             <View style={tw`h-1/3`}>
@@ -105,7 +120,7 @@ const UserDriverRideScreen = () => {
                     onPress={() => cancelRide()}
                 >
                     <Text style={tw`text-center text-white font-bold text-xl`}>
-                        Cancel trip
+                        cancel trip
                     </Text>
                 </TouchableOpacity>
 
