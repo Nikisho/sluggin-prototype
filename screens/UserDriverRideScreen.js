@@ -50,7 +50,7 @@ const UserDriverRideScreen = () => {
     }
     // console.table(origin, destination)
     //Timer to delay Map component
-    const Delayed = ({ children, waitBeforeShow = 500 }) => {
+    const Delayed = ({ children, waitBeforeShow = 600 }) => {
         const [isShown, setIsShown] = useState(false);
 
         useEffect(() => {
@@ -101,11 +101,11 @@ const UserDriverRideScreen = () => {
             <View style={tw`h-1/3`}>
 
                 <Delayed>
-                    {/* <Map
+                    <Map
                         key={rideData?.data().id}
                         origin={origin}
                         destination={destination}
-                    /> */}
+                    />
                 </Delayed>
             </View>
             <View style={tw`h-2/3 m-4`}>

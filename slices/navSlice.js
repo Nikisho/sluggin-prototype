@@ -8,7 +8,8 @@ const initialState = {
     travelTimeInformation: null,
     currentUser: {
         userAuthenticationInfo: null,
-        isLoggedIn: false
+        isLoggedIn: false,
+        token: null
     }
 }
 

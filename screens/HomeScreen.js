@@ -4,14 +4,15 @@ import tw from 'tailwind-react-native-classnames'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@rneui/base';
 import { Icon } from "@rneui/themed";
-import { setDestination, setOrigin, setTravelDate } from '../slices/navSlice';
+import { selectCurrentUser, setCurrentUser, setDestination, setOrigin, setTravelDate } from '../slices/navSlice';
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import Geocoder from 'react-native-geocoding';
+import * as AuthSession from 'expo-auth-session';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -20,6 +21,7 @@ const HomeScreen = () => {
     const [show, setShow] = useState(false);
     const [originLocality, setOriginLocality] = useState({});
     const [destinationLocality, setDestinationLocality] = useState({});
+    const currentUser = useSelector(selectCurrentUser);
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -60,8 +62,38 @@ const HomeScreen = () => {
         }));
     }
 
+    const logout = async () =>{
+        try {
+            await AuthSession.revokeAsync({
+                token: currentUser.token
+            },{
+                revocationEndpoint: "https://oauth2.googleapis.com/revoke"
+            });
+            
+            dispatch(setCurrentUser({
+                useAuthenticationInfo: null,
+                isLoggedIn: false,
+                token: null
+            }));
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
     return (
         <SafeAreaView style={tw`h-full`}>
+            <View style={tw`absolute self-end p-2 `}>
+                <TouchableOpacity style={tw`rounded-2xl bg-black p-3 shadow-lg mx-3`}
+                    onPress={() => {logout()}}
+                >
+                    <Icon
+                        name='log-out-outline'
+                        type='ionicon'
+                        color='white'
+                        size={23}
+                    />
+                </TouchableOpacity>
+            </View>
             <View style={tw`top-1/3 mx-7 bg-white shadow-lg rounded-xl p-3`}>
 
                 {/* textInputFrom */}
