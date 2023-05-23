@@ -27,10 +27,10 @@ const LoginScreen = () => {
     iosClientId: `${AUTH_CLIENT_ID}`,
     expoClientId: `${EXPO_CLIENT_ID}`,
   });
+  console.log(token + ' LOOK HERE')
   useEffect(() => {
     if (response?.type === "success") {
       setToken(response.authentication.accessToken);
-
       getUserInfo();
     }
   }, [response, token]);
@@ -47,25 +47,26 @@ const LoginScreen = () => {
       const user = await response.json();
 
       //ERROR CANNOT READ indexOf undefined???
+      //Fixed but new warning
       postToFirestore = async () => {
         const docRef = await setDoc(doc(db, "USERS", user.id), {
           user: user
-        });
+        }, {merge: true});
       }
 
-      postToFirestore()
+      postToFirestore();
       dispatch(setCurrentUser({
         userAuthenticationInfo: user,
         isLoggedIn: true,
         token: token
       }));
     
-
+      
     } catch (error) {
       console.error(error)
     }
   };
-
+  console.log(token);
   if (currentUser.isLoggedIn) {
 
     return <HomeScreen />

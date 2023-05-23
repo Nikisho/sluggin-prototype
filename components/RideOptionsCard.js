@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import tw from 'tailwind-react-native-classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectDestination, selectOrigin, selectTravelDate, setRideScreen } from '../slices/navSlice'
+import { selectCurrentUser, selectDestination, selectOrigin, selectTravelDate, setRideScreen } from '../slices/navSlice'
 import moment from 'moment'
 import { Icon } from '@rneui/base'
 import { useNavigation } from '@react-navigation/native'
@@ -16,11 +16,12 @@ const RideOptionsCard = () => {
   const date = useSelector(selectTravelDate);
   const queriedOrigin = useSelector(selectOrigin);
   const queriedDestination = useSelector(selectDestination);
+  const currentUser = useSelector(selectCurrentUser);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [rideData, setRideData] = useState([]);
 
-  const query_rides_3 = query(collection(db, "TRIPS"));
+  const query_rides_3 = query(collection(db, "TRIPS"), where("driverUserId", "!=", currentUser.userAuthenticationInfo.id));
   // const query_rides_1 = query(collection(db, "TRIPS"), where("departure_date", "==", `${moment(date).format("L")}`));
   // const query_rides_2 = query(collection(db, "TRIPS"), where("city_origin", "==", `${queriedOrigin.cityName}`));
   // const query_rides_3 = query(collection(db, "TRIPS"), where("city_destination", "==", `${queriedDestination.cityName}`));

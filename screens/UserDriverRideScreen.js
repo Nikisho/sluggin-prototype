@@ -66,7 +66,7 @@ const UserDriverRideScreen = () => {
     const cancelRide = async () => {
         let alert = await cancelTripAlert()
         if (alert === true) {
-            if (rideData.data().driverUserId !== currentUser.userAuthenticationInfo.id) {
+            if (rideData.data().driverUserId === currentUser.userAuthenticationInfo.id) {
                 // if (alert === true) {
                 //     try {
 
@@ -120,7 +120,7 @@ const UserDriverRideScreen = () => {
                     onPress={() => cancelRide()}
                 >
                     <Text style={tw`text-center text-white font-bold text-xl`}>
-                        cancel trip
+                        Cancel trip
                     </Text>
                 </TouchableOpacity>
 

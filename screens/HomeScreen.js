@@ -65,13 +65,14 @@ const HomeScreen = () => {
     const logout = async () =>{
         try {
             await AuthSession.revokeAsync({
-                token: currentUser.token
+                token: currentUser.token,
+                clientId: currentUser.userAuthenticationInfo.id
             },{
                 revocationEndpoint: "https://oauth2.googleapis.com/revoke"
             });
             
             dispatch(setCurrentUser({
-                useAuthenticationInfo: null,
+                userAuthenticationInfo: null,
                 isLoggedIn: false,
                 token: null
             }));
